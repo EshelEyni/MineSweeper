@@ -60,7 +60,7 @@ function difficulty(boardSqrt, numOfMines, numsOfLives) {
     gameOver.style.display = 'none'
     gBoardSqrt = boardSqrt
     gState.board = buildBoard(createMat(boardSqrt, boardSqrt))
-    renderBoard(gState.board, '.board-container')
+    renderBoard(gState.board, '.board')
     gState.lives = numsOfLives
     renderLives(numsOfLives)
 
@@ -75,7 +75,7 @@ function smiley() {
     const timer = document.querySelector('.timer')
     timer.style.display = 'none'
     gState.board = buildBoard(createMat(gBoardSqrt, gBoardSqrt))
-    renderBoard(gState.board, '.board-container')
+    renderBoard(gState.board, '.board')
     renderLives(3)
 
 }

@@ -5,7 +5,6 @@ var gMine = '💣'
 var gFlag = '🚩'
 
 var gHint = false
-var HINT_IMG = `💡`
 var hintsIdx
 var SMILEY_IMG = '<img src="images/defsmiley.png" />';
 var WIN_IMG = '<img src="images/win.png" />';
@@ -43,7 +42,7 @@ var gState = {
 
 
 function init() {
-    const elSmiley = document.querySelector('.Smiley')
+    const elSmiley = document.querySelector('.smiley')
     elSmiley.innerHTML = SMILEY_IMG
     gTimer = false
     gState.lives = 1
@@ -52,7 +51,7 @@ function init() {
 }
 
 function render() {
-    renderBoard(gState.board, '.board-container')
+    renderBoard(gState.board, '.board')
     renderLives(1)
     renderNumsSafeClick()
     renderHints()

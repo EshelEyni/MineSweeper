@@ -7,9 +7,9 @@ function hint(elHint, idx) {
 }
 
 function renderHints() {
-    const elHints = document.querySelectorAll('.hints button')
+    const elHints = document.querySelectorAll('.hints span')
     for (var i = 0; i < elHints.length; i++) {
-        elHints[i].innerHTML = `${HINT_IMG}`
+        elHints[i].innerHTML = `💡`
 
     }
 }
@@ -32,7 +32,7 @@ function revealByHint(cellI, cellJ, mat) {
 
 function hideHint(cellI, cellJ, mat) {
     gHint = false
-    const elHints = document.querySelectorAll('.hints button')
+    const elHints = document.querySelectorAll('.hints span')
     elHints[hintsIdx].style.display = 'none'
 
     for (var i = cellI - 1; i <= cellI + 1; i++) {
@@ -106,7 +106,7 @@ function sevenBoom() {
     const gameOver = document.querySelector('.gameover')
     gameOver.style.display = 'none'
     gState.board = buildBoard(createMat(gBoardSqrt, gBoardSqrt))
-    renderBoard(gState.board, '.board-container')
+    renderBoard(gState.board, '.board')
     renderLives(3)
     gNumOfMines = gNumOfMines
 

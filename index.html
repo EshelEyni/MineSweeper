@@ -5,45 +5,64 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
     <title>Mine Sweeper</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body onload="init()">
     <h1>Mine Sweeper!</h1>
-    <div class="Smiley" onclick="smiley()">😎</div>
-    <div class="hints"> Hints:
-        <button onclick="hint(this,0)"></button>
-        <button onclick="hint(this,1)"></button>
-        <button onclick="hint(this,2)"></button>
-    </div>
-    <div class="safeclick">
-        <button onclick="safeClick()">Safe Click! </button>
-        Clicks Available: <span class="safeclickText"></span>
-    </div>
-    <div class="difficulty">
-        <button onclick="difficulty(4,2,1)">Easy(4*4)</button>
-        <button onclick="difficulty(8,12,3)">Hard(8*8)</button>
-        <button onclick="difficulty(12,30,5)">Extreme(12*12)</button>
-    </div>
-    <div class="Lives"></div>
-    <div class="bestscore">BEST SCORE:</div>
-    <div class="gameover"></div>
-    <div class="timer"></div>
-    <div class="board-container"></div>
-    <div class="manuallmode">
-        <button onclick="setManuallMode()">Manuall Mines!</button>
-    </div>
-    <div class="sevenboom">
-        <button onclick="sevenBoom()">7 BOOM!!!</button>
-    </div>
-    <div class="undo">
-        <button onclick="undo()">UNDO!</button>
+    <div class="smiley" onclick="smiley()"></div>
+    <div class="main-container">
+
+
+
+        <div class="game-setting-container">
+            <h3>Game Setting</h3>
+            <div class="hints">Hints:
+                <span onclick="hint(this,0)"></span>
+                <span onclick="hint(this,1)"></span>
+                <span onclick="hint(this,2)"></span>
+            </div>
+            <div class="Lives"></div>
+            <div class="safeclick">
+                <button onclick="safeClick()"><span class="safeclickText"></span> Safe Click</button>
+            </div>
+            <div class="undo">
+                <button onclick="undo()">UNDO!</button>
+            </div>
+        </div>
+
+
+        <div class="gameover"></div>
+        <div class="board-container">
+            <header class="board-header">
+                <div class="bestscore">Best score:</div>
+                <div class="timer">Timer: </div>
+            </header>
+            <div class="board"></div>
+        </div>
+
+        <div class="board-setting-container">
+            <h3>Board Setting</h3>
+            <div class="difficulty">
+                <button onclick="difficulty(4,2,1)">Easy(4*4)</button>
+                <button onclick="difficulty(8,12,3)">Hard(8*8)</button>
+                <button onclick="difficulty(12,30,5)">Extreme(12*12)</button>
+            </div>
+
+            <div class="manuallmode">
+                <button onclick="setManuallMode()">Manuall Mines!</button>
+            </div>
+            <div class="sevenboom">
+                <button onclick="sevenBoom()">7 BOOM!!!</button>
+            </div>
+        </div>
     </div>
 
     <p>Created By Eshel Eyni</p>
-    <script src="js/bunosFeatures.js"></script>
-    <script src="js/gameChange.js"></script>
+    <script src="js/bunos-features.js"></script>
+    <script src="js/game-change.js"></script>
     <script src="js/mine.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/main.js"></script>
