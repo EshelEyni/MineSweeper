@@ -1,0 +1,76 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+.smiley img {
+  width: 75px;
+  height: 75px;
+}
+
+.main-container {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.game-setting-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.board-setting-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.board-container {
+  background-color: #C6C6C6;
+  padding: 10px;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.board {
+  height: 530px;
+  width: 530px;
+  display: inline-block;
+}
+
+.board table {
+  width: 100%;
+  height: 100%;
+}
+
+.hints span {
+  font-size: 20px;
+  border-radius: 50%;
+  display: inline;
+}
+
+.safeclick {
+  color: black;
+  font-size: 1em;
+}
+
+.safeclick span {
+  font-size: 1em;
+}
+

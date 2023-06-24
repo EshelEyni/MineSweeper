@@ -2,13 +2,12 @@
 
 // DOM Elements
 const timerElement = document.querySelector('.timer');
-const resultElement = document.querySelector('.gameover');
 const safeClickCountElement = document.querySelector('.safe-click-count');
 const smileyElement = document.querySelector('.smiley');
 const livesElement = document.querySelector('.Lives');
 const hintsContainerElement = document.querySelector('.hints-container');
-const bestScoreElement = document.querySelector('.bestscore');
-const gameBoardElement = document.querySelector('.board');
+const bestScoreElement = document.querySelector('.best-score');
+const gameBoardElement = document.querySelector('.board-container');
 
 const btnClickSafe = document.querySelector('.btn-safe-click');
 const btnDifficultyContainer = document.querySelector('.btn-difficulty-container');

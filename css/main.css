@@ -1,76 +1,204 @@
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
+@font-face {
+  font-family: 'Digital Dismay';
+  src: url('./digital-dismay.otf') format('truetype');
 }
 
-.smiley img {
-  width: 75px;
-  height: 75px;
+@font-face {
+  font-family: 'Press Start';
+  src: url('./prstart.ttf');
+}
+
+@font-face {
+  font-family: 'MS Sans Serif';
+  src: url('./micross.ttf');
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  height: 25px;
+  width: 25px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .main-container {
-  margin-top: 25px;
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-}
-
-.game-setting-container {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-}
-
-.board-setting-container {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  background-color: lightgray;
+  height: 50vw;
+  width: 50vw;
 }
 
 .board-container {
-  background-color: #C6C6C6;
-  padding: 10px;
+  flex-grow: 1;
+}
+
+.board-container table {
+  height: 100%;
+  width: 100%;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 .board-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+  padding: 2px;
+  margin: 6px;
+  border-top: 2px solid #7b7b7b;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  border-left: 2px solid #7b7b7b;
 }
 
-.cell {
-  width: 40px;
-  height: 40px;
+.timer,
+.flag-counter {
+  font-family: 'Digital Dismay';
+  font-size: 35px;
+  letter-spacing: 1px;
+  color: red;
+  background-color: black;
+  text-align: center;
+  padding: 4px 4px 0 7px;
+  line-height: 1em;
+}
+
+td {
+  background-color: #c0c0c0;
+  border: 1.5px solid;
+  border-top-color: #ffffff;
+  border-right-color: #7b7b7b;
+  border-bottom-color: #7b7b7b;
+  border-left-color: #ffffff;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.showned {
+  font-family: 'Press Start';
+  background-color: #c0c0c0;
+  font-size: 80%;
+  text-align: center;
+  border: none;
+}
+
+button {
+  font-family: 'MS Sans Serif';
+  text-align: left;
+  font-size: 14px;
+  height: 30px;
+  width: max-content;
+  background-color: #bfbfbf;
+  color: black;
+  border-bottom: 2px solid #7b7b7b;
+  border-left: 2px solid #ffffff;
+  border-top: 2px solid #ffffff;
+  border-right: 2px solid #7b7b7b;
+}
+
+button:hover {
+  background-color: lightgray;
+  color: slategray;
+  cursor: pointer;
+}
+
+#clock {
+  font-family: 'MS Sans Serif';
+  font-size: 14px;
+  display: inline;
+  float: right;
+  border-top: 1.5px solid #808080;
+  border-left: 1.5px solid #808080;
+  border-right: 1.5px solid #fafafa;
+  border-bottom: 1.5px solid #fafafa;
+  /* height: 28px; */
+  width: 200px;
+  height: 22px;
+  margin: 2px;
+  padding: 5px;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: center;
+  margin: 80px 10px;
+}
+
+#folder1 {
+  display: inline;
+  padding-right: 10px;
+}
+
+#folder2 {
+  display: inline;
+  padding-right: 10px;
+}
+
+#folder-bar {
+  background-color: #d3cec4;
+  border: none;
+  text-align: left;
+  padding: 2px 8px;
+}
+
+#footer {
+  text-align: center;
+  position: fixed;
+  height: 36px;
+  background-color: #bfbfbf;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin-bottom: 0px;
+}
+
+.menu a {
+  font-family: 'MS Sans Serif';
+  color: black;
+  text-decoration: none;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+#reset {
+  text-align: center;
+  width: 35px;
+  height: 35px;
+  border-top: 2px solid #ffffff;
+  border-right: 2px solid #7b7b7b;
+  border-bottom: 2px solid #7b7b7b;
+  border-left: 2px solid #ffffff;
+}
+
+#reset:hover {
   text-align: center;
   cursor: pointer;
 }
 
-.board {
-  height: 530px;
-  width: 530px;
-  display: inline-block;
+.sidebar {
+  vertical-align: top;
+  max-width: 300px;
+  margin: 0 30px;
 }
 
-.board table {
-  width: 100%;
-  height: 100%;
-}
-
-.hints span {
-  font-size: 20px;
-  border-radius: 50%;
+#size-btns {
+  float: left;
   display: inline;
+  margin: 2px;
 }
 
-.safeclick {
-  color: black;
-  font-size: 1em;
+#start {
+  float: left;
 }
-
-.safeclick span {
-  font-size: 1em;
-}
-

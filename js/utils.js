@@ -1,29 +1,18 @@
 'use strict';
 
-// Emoji's
-const gMine = '💣';
-const gFlag = '🚩';
-const LIVE_IMG = '❤️';
+const MINE_EMOJY = '<img src="images/mine.png"/>';
+const FLAG_EMOJY = '<img src="images/flag.png"/>';
+const HEART_EMOJY = '<img src="images/heart.png"/>';
+const SMILEY_EMOJY = '<img src="images/smiley.png"/>';
+const WIN_EMOJY = '<img src="images/smiley-win.png"/>';
+const LOSE_EMOJY = '<img src="images/smiley-lose.png"/>';
 
-// Images
-const SMILEY_IMG = '<img src="images/defsmiley.png" />';
-const WIN_IMG = '<img src="images/win.png" />';
-const LOSE_IMG = '<img src="images/lose.png" />';
+
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min);
-}
-
-function makeId() {
-  var length = 12;
-  var txt = '';
-  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (var i = 0; i < length; i++) {
-    txt += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return txt;
 }
 
 function getRandomUniqueNumbers(x, y) {
@@ -35,20 +24,4 @@ function getRandomUniqueNumbers(x, y) {
   });
 
   return numbers.slice(0, y);
-}
-
-function deepCopyWithPrototypes(obj) {
-  if (obj === null || typeof obj !== 'object') {
-    return obj;
-  }
-
-  let copy = Object.create(Object.getPrototypeOf(obj));
-
-  for (let key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      copy[key] = deepCopyWithPrototypes(obj[key]);
-    }
-  }
-
-  return copy;
 }
