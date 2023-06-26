@@ -1,0 +1,27 @@
+.game-stats-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.lives-container {
+  margin: 10px 0;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  color: #7b7b7b;
+}
+
+.heart-img {
+  height: 20px;
+  width: 20px;
+}
+
+.best-score {
+  font-size: 18px;
+  color: #7b7b7b;
+  margin: 10px 0;
+  text-shadow: 1px 1px 0px #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+}

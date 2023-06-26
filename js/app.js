@@ -1,14 +1,23 @@
 'use strict';
 
+// Constants
+const MINE_IMG = '<img class="mine-img" src="images/mine.png"/>';
+const FLAG_IMG = '<img class="flag-img" src="images/flag.png"/>';
+const HEART_IMG = '<img class="heart-img" src="images/heart.png"/>';
+const SMILEY_IMG = '<img class="smiley-img" src="images/smiley.png"/>';
+const SMILEY_WIN_IMG = '<img class="smiley-img" src="images/smiley-win.png"/>';
+const SMILEY_LOSE_IMG = '<img class="smiley-img" src="images/smiley-lose.png"/>';
+const SMILEY_SHOCKED_IMG = '<img class="smiley-img" src="images/smiley-shocked.png"/>';
+
 // DOM Elements
 const timerElement = document.querySelector('.timer');
 const safeClickCountElement = document.querySelector('.safe-click-count');
-const smileyElement = document.querySelector('.smiley');
-const livesElement = document.querySelector('.Lives');
+const smileyContainerElement = document.querySelector('.smiley-container');
+const livesElement = document.querySelector('.lives-container');
 const hintsContainerElement = document.querySelector('.hints-container');
 const bestScoreElement = document.querySelector('.best-score');
 const gameBoardElement = document.querySelector('.board-container');
-
+const flagCounterElement = document.querySelector('.flag-counter');
 const btnClickSafe = document.querySelector('.btn-safe-click');
 const btnDifficultyContainer = document.querySelector('.btn-difficulty-container');
 const btnUndoAction = document.querySelector('.btn-undo-action');
@@ -17,17 +26,22 @@ const btnSetSevenBoom = document.querySelector('.btn-set-seven-boom');
 
 const app = new App();
 
-smileyElement.addEventListener('click', app.handleSmileyClick.bind(app));
+smileyContainerElement.addEventListener('mousedown', () => {
+  smileyContainerElement.innerHTML = SMILEY_SHOCKED_IMG;
+});
+smileyContainerElement.addEventListener('mouseup', () => {
+  smileyContainerElement.innerHTML = SMILEY_IMG;
+});
+
+smileyContainerElement.addEventListener('click', app.handleSmileyClick.bind(app));
 
 //  Cell click events
 gameBoardElement.addEventListener('click', event => {
-  if (!app.state.lives) return;
   const { target } = event;
   if (target.classList.contains('cell')) {
+    if (!app.state.lives) return;
     const rowIdx = Number(target.dataset.rowIdx);
     const columnIdx = Number(target.dataset.columnIdx);
-    // TODO: Extract this to a function in app
-
     const clickedCell = app.state.board.board[rowIdx][columnIdx];
     const { isManualMineSetting } = app;
 
@@ -72,13 +86,15 @@ gameBoardElement.addEventListener('click', event => {
 // Cell right click events
 gameBoardElement.addEventListener('contextmenu', event => {
   event.preventDefault();
-  if (!app.state.lives) return;
   const { target } = event;
   if (target.classList.contains('cell')) {
+    if (!app.state.lives) return;
     const rowIdx = Number(target.dataset.rowIdx);
     const columnIdx = Number(target.dataset.columnIdx);
     const clickedCell = app.state.board.board[rowIdx][columnIdx];
-    clickedCell.handleCellRightClick();
+    const isCellFlagged = clickedCell.handleCellRightClick();
+    app.setFlagCounter(isCellFlagged);
+
     if (!app.isTimerRunning) app.handleGameStart();
     app.setStateHistory();
   }
@@ -101,7 +117,7 @@ btnDifficultyContainer.addEventListener('click', e => {
   const { difficultySettings } = e.target.dataset;
   const boundHandleClick = app.handleSetDifficultyBtnClick.bind(app);
   boundHandleClick(difficultySettings);
-  smileyElement.innerHTML = SMILEY_IMG;
+  smileyContainerElement.innerHTML = SMILEY_IMG;
 });
 
 btnSetMinesManually.addEventListener('click', app.handleBtnSetMinesManuallyClick.bind(app));
@@ -111,8 +127,11 @@ btnSetSevenBoom.addEventListener('click', app.handleBtnSetSevenBoomClick.bind(ap
 addEventListener('keydown', e => {
   if (e.key === 'e' && e.altKey && e.ctrlKey) {
     app.state.board.loopThroughCells(cell => {
-      cell.isShown = !cell.isShown;
-      cell.render();
+      const cellElement = cell.getCellElement();
+      cellElement.innerHTML = cell.getShownCellContent();
+      const classListSet = new Set(cellElement.classList);
+      if (classListSet.has('cheat')) cell.render();
+      cellElement.classList.toggle('cheat');
     });
   }
 });

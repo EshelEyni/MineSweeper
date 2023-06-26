@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
     <title>Mine Sweeper</title>
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/index.css" />
 
     <script defer src="js/utils.js"></script>
     <script defer src="js/classes/cell.js"></script>
@@ -17,47 +17,45 @@
 
   <body>
     <main class="app">
-      <h1>Mine Sweeper!</h1>
-      
+      <h1 class="app-title">Mine Sweeper!</h1>
 
-
-        <div class="main-container">
+      <div class="main-container">
+        <div class="game-stats-container">
+          <div class="best-score">Best score:</div>
+          <div class="lives-container"></div>
+        </div>
+        <div class="board-wrapper">
           <header class="board-header">
-            <div class="flag-counter">12</div>
-            <div class="smiley"><img src="images/smiley-win.png"/></div>
+            <div class="flag-counter"></div>
+            <div class="smiley-container"><img src="images/smiley.png" /></div>
             <div class="timer">000</div>
           </header>
           <div class="board-container"></div>
         </div>
-        
-        <div class="board-setting-container">
-          <h3>Board Setting</h3>
-          <div class="btn-difficulty-container">
-          <div class="best-score">Best score:</div>
-          <button data-difficulty-settings="EASY">Easy(4*4)</button>
-          <button data-difficulty-settings="MEDIUM">Hard(8*8)</button>
-          <button data-difficulty-settings="HARD">Extreme(12*12)</button>
-        </div>
-        
-        <button class="btn-set-mines-manually">Manuall Mines!</button>
-        <button class="btn-set-seven-boom">7 BOOM!!!</button>
       </div>
-      </div>
-
-      <div class="main-container">
-        <div class="game-setting-container">
-        <div class="hints-container"></div>
-        <div class="Lives"></div>
-        <div class="safeclick">
-          <button class="btn-safe-click">
-            <span class="safe-click-count"></span>
-            <span> Safe Click </span>
-          </button>
-        </div>
+      <div class="game-actions">
         <button class="btn-undo-action">UNDO!</button>
+        <button class="btn-safe-click">
+          <span class="safe-click-count"></span>
+          <span> Safe Click </span>
+        </button>
+        <div class="hints-container"></div>
+      </div>
+      <div class="app-game-setting">
+        <div class="btn-difficulty-container">
+          <button data-difficulty-settings="EASY">Easy(8*8)</button>
+          <button data-difficulty-settings="MEDIUM">Hard(12*12)</button>
+          <button data-difficulty-settings="HARD">Extreme(16*16)</button>
+        </div>
+        <div class="custom-game-setting-container">
+          <button class="btn-set-mines-manually">Manuall Mines!</button>
+          <button class="btn-set-seven-boom">7 BOOM!!!</button>
+        </div>
       </div>
 
-      <p>Created By Eshel Eyni</p>
+      <div class="footer">
+        <p>Created By Eshel Eyni</p>
+      </div>
     </main>
   </body>
 </html>

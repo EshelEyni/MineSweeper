@@ -10,6 +10,7 @@ class AppState {
     board: new Board(8),
     lives: 1,
     minesCount: 12,
+    flagCount: 12,
     boardSqrt: 8,
     safeClickCount: 1,
     hintsCount: 1,
@@ -19,6 +20,7 @@ class AppState {
     board: new Board(12),
     lives: 3,
     minesCount: 30,
+    flagCount: 30,
     boardSqrt: 12,
     safeClickCount: 3,
     hintsCount: 3,
@@ -28,6 +30,7 @@ class AppState {
     board: new Board(16),
     lives: 5,
     minesCount: 64,
+    flagCount: 64,
     boardSqrt: 16,
     safeClickCount: 5,
     hintsCount: 5,
@@ -36,12 +39,14 @@ class AppState {
 
 class App {
   constructor() {
-    this.render();
+    this.renderApp();
   }
 
-  render() {
+  renderApp() {
     this.state.board.renderBoard();
+    this.renderFlagCounter();
     this.renderLives();
+    this.#renderTimer();
     this.#renderSafeClickCount();
     this.#renderHints();
     this.#renderBestScore();
@@ -69,26 +74,48 @@ class App {
     const { hintsCount } = this.state;
     let hints = '';
     for (let i = 0; i < hintsCount; i++) {
-      hints += `<button class="hint" data-idx="${i}">Hint</button>`;
+      hints += `<button class="hint" data-idx="${i}">
+                  <img class="smiley-monocle" src="images/smiley-monocle.png"/>
+                </button>`;
     }
     hintsContainerElement.innerHTML = hints;
   }
 
-  #setAndRenderTimer() {
+  #setTimer() {
     this.currGameTime++;
     const minutes = Math.floor(this.currGameTime / 60);
     const seconds = this.currGameTime % 60;
+    return { minutes, seconds };
+  }
 
+  #renderTimer(time) {
+    if (!time) {
+      timerElement.innerHTML = '000';
+      return;
+    }
+    const { minutes, seconds } = time;
     const formattedMinutes = minutes.toString();
     const formattedSeconds = seconds.toString().padStart(2, '0');
-
     timerElement.innerHTML = `${formattedMinutes}:${formattedSeconds}`;
   }
 
+  setFlagCounter(isFlagged) {
+    if (isFlagged) this.state.flagCount--;
+    else this.state.flagCount++;
+    this.renderFlagCounter();
+  }
+
+  renderFlagCounter() {
+    const { flagCount } = this.state;
+    const paddingNum = flagCount >= 0 ? 3 : 0;
+    const formmatedFlagCount = flagCount.toString().padStart(paddingNum, '0');
+    flagCounterElement.innerHTML = `${formmatedFlagCount}`;
+  }
+
   renderLives() {
-    livesElement.innerHTML = `Number of lifes: `;
+    livesElement.innerHTML = '';
     for (let i = 0; i < this.state.lives; i++) {
-      livesElement.innerHTML += `${HEART_EMOJY}`;
+      livesElement.innerHTML += `${HEART_IMG}`;
     }
   }
 
@@ -99,10 +126,8 @@ class App {
   handleBtnSetSevenBoomClick() {
     clearInterval(this.intervalTimerId);
     this.isTimerRunning = false;
-    timerElement.innerHTML = '000';
     this.state.board.setBoard();
-    this.state.board.renderBoard();
-    this.render();
+    this.renderApp();
 
     let index = 1;
     this.state.board.loopThroughCells(cell => {
@@ -129,27 +154,27 @@ class App {
     this.isMinesSet = false;
     this.isClickHint = false;
     this.isManualMineSetting = false;
-
-    timerElement.innerHTML = '000';
-    this.render();
+    this.renderApp();
   }
 
   handleSmileyClick() {
-    smileyElement.innerHTML = SMILEY_IMG;
+    console.log('smiley clicked', this.state);
+    this.state = new AppState().getState(this.state.name);
+    this.prevState = new AppState().getState(this.state.name);
+    this.stateHistory = [];
     clearInterval(this.intervalTimerId);
+    this.currGameTime = 0;
     this.isTimerRunning = false;
     this.isMinesSet = false;
-    const { boardSqrt } = this.state;
-    this.state.board = new Board(boardSqrt);
-
-    timerElement.innerHTML = '000';
-    this.render();
+    this.isClickHint = false;
+    this.isManualMineSetting = false;
+    this.renderApp();
   }
 
   handleBtnSafeClick() {
-    if (!safeClickCountElement) return;
-    if (!this.isMinesSet) this.state.board.setMines();
-    this.safeClickCountElement--;
+    if (!this.state.safeClickCount) return;
+    if (!this.isMinesSet) this.state.board.setMines(this.state.minesCount);
+    this.state.safeClickCount--;
     this.#renderSafeClickCount();
 
     const safeCells = [];
@@ -157,7 +182,6 @@ class App {
     this.state.board.loopThroughCells(cell => {
       if (!cell.isMine && !cell.isShown) safeCells.push(cell);
     });
-
     if (!safeCells.length) return;
 
     const safeCell = safeCells[getRandomInt(0, safeCells.length - 1)];
@@ -179,7 +203,7 @@ class App {
         const newCell = new Cell(cell.coords);
         newCell.isShown = cell.isShown;
         newCell.isMine = cell.isMine;
-        newCell.isMarked = cell.isMarked;
+        newCell.isFlagged = cell.isFlagged;
         newCell.surroundingMinesCount = cell.surroundingMinesCount;
         return newCell;
       });
@@ -190,24 +214,25 @@ class App {
   }
 
   handleBtnUndoActionClick() {
-    console.log('this.stateHistory: ', this.stateHistory);
     if (!this.stateHistory.length) {
       const { name } = this.state;
       this.state = new AppState().getState(name);
     } else {
       const lastStateSnapshot = this.stateHistory.pop();
-      console.log('lastStateSnapshot: ', lastStateSnapshot);
       this.state = lastStateSnapshot;
     }
-    this.render();
+    this.renderApp();
   }
 
   handleGameStart() {
     if (this.isTimerRunning) return;
     if (!this.isMinesSet) this.state.board.setMines(this.state.minesCount);
     this.isMinesSet = true;
-    this.#setAndRenderTimer();
-    this.intervalTimerId = setInterval(this.#setAndRenderTimer.bind(this), 1000);
+    timerElement.innerHTML = '0:00';
+    this.intervalTimerId = setInterval(() => {
+      const time = this.#setTimer();
+      this.#renderTimer(time);
+    }, 1000);
     this.isTimerRunning = true;
   }
 
@@ -222,13 +247,13 @@ class App {
       }
     });
 
-    smileyElement.innerHTML = LOSE_IMG;
+    smileyContainerElement.innerHTML = SMILEY_LOSE_IMG;
   }
 
   #handleGameWin() {
     this.#setBestScore();
     clearInterval(this.intervalTimerId);
-    smileyElement.innerHTML = WIN_IMG;
+    smileyContainerElement.innerHTML = SMILEY_WIN_IMG;
   }
 
   #setBestScore() {
@@ -243,7 +268,7 @@ class App {
     const { boardSqrt } = this.state;
     let victoryCount = Math.pow(boardSqrt, 2);
     this.state.board.loopThroughCells(cell => {
-      if ((cell.isMine && cell.isMarked) || cell.isShown) victoryCount--;
+      if ((cell.isMine && cell.isFlagged) || cell.isShown) victoryCount--;
     });
 
     if (victoryCount === 0) this.#handleGameWin();

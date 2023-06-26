@@ -1,0 +1,82 @@
+.game-actions {
+  display: flex;
+}
+
+.btn-undo-action {
+  margin: 10px 0;
+  padding: 10px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  color: #7b7b7b;
+  background-color: #c0c0c0;
+  border: 2px solid;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  border-bottom-color: #7b7b7b;
+  border-right-color: #7b7b7b;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.btn-undo-action:hover {
+  background-color: #7b7b7b;
+  color: #ffffff;
+}
+
+.hints-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  color: #7b7b7b;
+  background-color: #c0c0c0;
+  border: 2px solid;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  border-bottom-color: #7b7b7b;
+  border-right-color: #7b7b7b;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.smiley-monocle {
+  height: 30px;
+  width: 30px;
+  pointer-events: none;
+}
+
+.hint:hover {
+  background-color: #7b7b7b;
+  color: #ffffff;
+}
+
+.btn-safe-click {
+  padding: 10px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  color: #7b7b7b;
+  background-color: #c0c0c0;
+  border: 2px solid;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  border-bottom-color: #7b7b7b;
+  border-right-color: #7b7b7b;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin: 10px 0;
+}
+
+.btn-safe-click:hover {
+  background-color: #7b7b7b;
+  color: #ffffff;
+}

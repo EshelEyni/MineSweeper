@@ -141,7 +141,8 @@ class Board {
     setTimeout(() => {
       hintedCells.forEach(cell => {
         if (cell.isShown === true) {
-          cell.isShown = cell.isHint = false;
+          cell.isShown = false;
+          cell.isHint = false;
           cell.render();
         }
       });
