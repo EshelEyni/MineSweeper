@@ -30,7 +30,7 @@ class Board {
         const cells = row
           .map(cell => {
             const { rowIdx, columnIdx } = cell.coords;
-            return `<td class="cell" data-row-idx="${rowIdx}" data-column-idx="${columnIdx}" id="cell-${rowIdx}-${columnIdx}"></td>`;
+            return `<td class="cell inset-border" data-row-idx="${rowIdx}" data-column-idx="${columnIdx}" id="cell-${rowIdx}-${columnIdx}"></td>`;
           })
           .join('');
 
@@ -140,7 +140,7 @@ class Board {
 
     setTimeout(() => {
       hintedCells.forEach(cell => {
-        if (cell.isShown === true) {
+        if (cell.isHint === true) {
           cell.isShown = false;
           cell.isHint = false;
           cell.render();

@@ -13,7 +13,7 @@ const SMILEY_SHOCKED_IMG = '<img class="smiley-img" src="images/smiley-shocked.p
 const timerElement = document.querySelector('.timer');
 const safeClickCountElement = document.querySelector('.safe-click-count');
 const smileyContainerElement = document.querySelector('.smiley-container');
-const livesElement = document.querySelector('.lives-container');
+const livesContainerElement = document.querySelector('.lives-container');
 const hintsContainerElement = document.querySelector('.hints-container');
 const bestScoreElement = document.querySelector('.best-score');
 const gameBoardElement = document.querySelector('.board-container');
@@ -104,7 +104,7 @@ gameBoardElement.addEventListener('contextmenu', event => {
 hintsContainerElement.addEventListener('click', event => {
   event.preventDefault();
   if (event.target.classList.contains('hint')) {
-    event.target.style.backgroundColor = 'yellow';
+    event.target.style.backgroundColor = 'var(--hint-color)';
     app.toggleIsHintClick(event.target);
   }
 });

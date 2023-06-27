@@ -3,13 +3,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 10px;
+  margin: 10px 0;
 }
 
-.lives-container {
-  margin: 10px 0;
-  text-align: center;
-  font-family: 'Courier New', Courier, monospace;
-  color: #7b7b7b;
+.lives-container > * {
+  transition: all 0.3s ease-in-out;
 }
 
 .heart-img {
@@ -20,7 +18,6 @@
 .best-score {
   font-size: 18px;
   color: #7b7b7b;
-  margin: 10px 0;
   text-shadow: 1px 1px 0px #ffffff;
   font-family: 'Courier New', Courier, monospace;
   text-align: center;

@@ -1,12 +1,6 @@
 .board-wrapper {
   display: flex;
   flex-direction: column;
-  background-color: lightgray;
-  border: 2px solid;
-  border-top-color: #ffffff;
-  border-left-color: #ffffff;
-  border-bottom-color: #7b7b7b;
-  border-right-color: #7b7b7b;
   margin: 0 10px;
 }
 
@@ -25,7 +19,6 @@
   align-items: center;
   height: 50px;
   position: relative;
-
   padding: 2px;
   margin: 6px;
   border: 2px solid;
@@ -42,14 +35,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40px;
-  width: 40px;
+  height: 35px;
+  width: 35px;
   padding: 2px;
-  border: 3px solid;
-  border-top-color: #ffffff;
-  border-left-color: #ffffff;
-  border-bottom-color: #7b7b7b;
-  border-right-color: #7b7b7b;
   box-shadow: 0 0 0 2px #7b7b7b;
   cursor: pointer;
 }
@@ -78,15 +66,11 @@
   width: 30px;
   height: 30px;
   background-color: #c0c0c0;
-  border: 2px solid;
-  border-top-color: #ffffff;
-  border-left-color: #ffffff;
-  border-bottom-color: #7b7b7b;
-  border-right-color: #7b7b7b;
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
+  transition: border 0.2s ease-in-out;
 }
 
 @media screen and (max-width: 400px) {
@@ -121,8 +105,8 @@
   color: #808080;
 }
 
-.cheat,
-.showned {
+.cell.cheat,
+.cell.showned {
   font-family: 'Press Start';
   background-color: #c0c0c0;
   font-size: 80%;

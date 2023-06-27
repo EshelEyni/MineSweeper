@@ -74,7 +74,7 @@ class App {
     const { hintsCount } = this.state;
     let hints = '';
     for (let i = 0; i < hintsCount; i++) {
-      hints += `<button class="hint" data-idx="${i}">
+      hints += `<button class="hint inset-border" data-idx="${i}">
                   <img class="smiley-monocle" src="images/smiley-monocle.png"/>
                 </button>`;
     }
@@ -113,10 +113,16 @@ class App {
   }
 
   renderLives() {
-    livesElement.innerHTML = '';
-    for (let i = 0; i < this.state.lives; i++) {
-      livesElement.innerHTML += `${HEART_IMG}`;
+    if (!this.isTimerRunning) {
+      livesContainerElement.innerHTML = '';
+      for (let i = 0; i < this.state.lives; i++) livesContainerElement.innerHTML += `${HEART_IMG}`;
+      return;
     }
+
+    const children = livesContainerElement.children;
+    [...children].reverse().forEach((child, idx) => {
+      if (idx >= this.state.lives) child.style.opacity = '0';
+    });
   }
 
   handleBtnSetMinesManuallyClick() {

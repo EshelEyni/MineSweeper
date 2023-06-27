@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #7b7b7b36;
+}
+
+button {
+  padding: 2.5px;
+  height: 35px;
+  color: #7b7b7b;
+  background-color: #c0c0c0;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #7b7b7b;
+  color: #ffffff;
+}
+
+.inset-border {
+  border: 2px solid;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  border-bottom-color: #7b7b7b;
+  border-right-color: #7b7b7b;
+}

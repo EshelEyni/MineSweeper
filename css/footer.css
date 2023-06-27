@@ -8,10 +8,11 @@
   color: white;
   text-align: center;
   padding: 10px 0;
-  border-top: 3px solid #ffffff;
-  border-left: 3px solid #ffffff;
-  border-right: 3px solid #7b7b7b;
-  border-bottom: 3px solid #7b7b7b;
+  border: 3px solid;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  border-right-color: #7b7b7b;
+  border-bottom-color: #7b7b7b;
   box-shadow: 0 0 0 2px #7b7b7b;
   font-family: 'Courier New', Courier, monospace;
 }

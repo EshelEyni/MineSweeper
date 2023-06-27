@@ -22,8 +22,8 @@ class Cell {
   }
 
   #renderShownCell(elCell) {
-    if (this.isHint) elCell.style.backgroundColor = 'rgb(233, 214, 111)';
-    if (this.isMine) elCell.style.backgroundColor = 'red';
+    if (this.isHint) elCell.style.backgroundColor = 'var(--hint-color)';
+    if (this.isMine) elCell.style.backgroundColor = 'var(--mine-color)';
     if (this.surroundingMinesCount) elCell.classList.add(`num-${this.surroundingMinesCount}`);
     elCell.classList.add('showned');
     elCell.innerHTML = this.getShownCellContent();
@@ -55,7 +55,7 @@ class Cell {
 
     if (this.isMine) {
       elCell.innerHTML = MINE_IMG;
-      elCell.style.backgroundColor = 'red';
+      elCell.style.backgroundColor = 'var(--mine-color)';
       return;
     }
     this.render();

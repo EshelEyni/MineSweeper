@@ -19,37 +19,38 @@
     <main class="app">
       <h1 class="app-title">Mine Sweeper!</h1>
 
-      <div class="main-container">
-        <div class="game-stats-container">
-          <div class="best-score">Best score:</div>
-          <div class="lives-container"></div>
-        </div>
-        <div class="board-wrapper">
-          <header class="board-header">
-            <div class="flag-counter"></div>
-            <div class="smiley-container"><img src="images/smiley.png" /></div>
-            <div class="timer">000</div>
-          </header>
-          <div class="board-container"></div>
-        </div>
-      </div>
       <div class="game-actions">
-        <button class="btn-undo-action">UNDO!</button>
-        <button class="btn-safe-click">
+        <button class="btn-undo-action inset-border">UNDO!</button>
+        <button class="btn-safe-click inset-border">
           <span class="safe-click-count"></span>
           <span> Safe Click </span>
         </button>
         <div class="hints-container"></div>
       </div>
+
+      <div class="main-container">
+        <div class="game-stats-container">
+          <div class="best-score">Best score:</div>
+          <div class="lives-container"></div>
+        </div>
+        <div class="board-wrapper inset-border">
+          <header class="board-header">
+            <div class="flag-counter"></div>
+            <div class="smiley-container inset-border"><img src="images/smiley.png" /></div>
+            <div class="timer">000</div>
+          </header>
+          <div class="board-container"></div>
+        </div>
+      </div>
       <div class="app-game-setting">
         <div class="btn-difficulty-container">
-          <button data-difficulty-settings="EASY">Easy(8*8)</button>
-          <button data-difficulty-settings="MEDIUM">Hard(12*12)</button>
-          <button data-difficulty-settings="HARD">Extreme(16*16)</button>
+          <button class="inset-border" data-difficulty-settings="EASY">Easy(8*8)</button>
+          <button class="inset-border" data-difficulty-settings="MEDIUM">Hard(12*12)</button>
+          <button class="inset-border" data-difficulty-settings="HARD">Extreme(16*16)</button>
         </div>
         <div class="custom-game-setting-container">
-          <button class="btn-set-mines-manually">Manuall Mines!</button>
-          <button class="btn-set-seven-boom">7 BOOM!!!</button>
+          <button class="btn-set-mines-manually inset-border">Manuall Mines!</button>
+          <button class="btn-set-seven-boom inset-border">7 BOOM!!!</button>
         </div>
       </div>
 

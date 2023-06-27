@@ -5,23 +5,9 @@
 
 .btn-set-mines-manually,
 .btn-set-seven-boom {
-  padding: 10px;
+  padding: 0 10px;
   font-family: 'Courier New', Courier, monospace;
   font-size: 16px;
-  color: #7b7b7b;
-  background-color: #c0c0c0;
-  border: 2px solid;
-  border-top-color: #ffffff;
-  border-left-color: #ffffff;
-  border-bottom-color: #7b7b7b;
-  border-right-color: #7b7b7b;
-  cursor: pointer;
   transition: all 0.3s;
   text-align: center;
-}
-
-.btn-set-mines-manually:hover,
-.btn-set-seven-boom:hover {
-  background-color: #7b7b7b;
-  color: #ffffff;
 }
