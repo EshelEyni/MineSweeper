@@ -1,4 +1,17 @@
-'use strict';
+import Board from './board.js';
+import {
+  timerElement,
+  safeClickCountElement,
+  smileyContainerElement,
+  livesContainerElement,
+  hintsContainerElement,
+  bestScoreElement,
+  flagCounterElement,
+} from '../dom-elements.js';
+
+import { HEART_IMG, SMILEY_WIN_IMG, SMILEY_LOSE_IMG, SMILEY_MONOCLE_IMG } from '../constants.js';
+
+import { getRandomInt } from '../utils';
 
 class AppState {
   getState(name) {
@@ -74,9 +87,7 @@ class App {
     const { hintsCount } = this.state;
     let hints = '';
     for (let i = 0; i < hintsCount; i++) {
-      hints += `<button class="hint inset-border" data-idx="${i}">
-                  <img class="smiley-monocle" src="images/smiley-monocle.png"/>
-                </button>`;
+      hints += `<button class="hint inset-border" data-idx="${i}">${SMILEY_MONOCLE_IMG}</button>`;
     }
     hintsContainerElement.innerHTML = hints;
   }
@@ -202,19 +213,7 @@ class App {
 
   setStateHistory() {
     const { state } = this;
-    const copy = JSON.parse(JSON.stringify(state));
-    Object.setPrototypeOf(copy.board, Board.prototype);
-    copy.board.board = state.board.board.map(row => {
-      return row.map(cell => {
-        const newCell = new Cell(cell.coords);
-        newCell.isShown = cell.isShown;
-        newCell.isMine = cell.isMine;
-        newCell.isFlagged = cell.isFlagged;
-        newCell.surroundingMinesCount = cell.surroundingMinesCount;
-        return newCell;
-      });
-    });
-
+    const copy = { ...state, board: this.state.board.clone() };
     this.stateHistory.push(this.prevState);
     this.prevState = copy;
   }
@@ -227,7 +226,12 @@ class App {
       const lastStateSnapshot = this.stateHistory.pop();
       this.state = lastStateSnapshot;
     }
-    this.renderApp();
+
+    this.state.board.renderBoard();
+    this.renderFlagCounter();
+    this.renderLives();
+    this.#renderSafeClickCount();
+    this.#renderHints();
   }
 
   handleGameStart() {
@@ -291,3 +295,5 @@ class App {
   isManualMineSetting = false;
   isMinesSet = false;
 }
+
+export default App;

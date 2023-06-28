@@ -1,4 +1,6 @@
-'use strict';
+import Cell from './cell.js';
+import { getRandomUniqueNumbers } from '../utils.js';
+import { gameBoardElement } from '../dom-elements.js';
 
 class Board {
   board = [];
@@ -158,4 +160,12 @@ class Board {
       });
     });
   }
+
+  clone() {
+    const newBoard = new Board(this.boardSqrt);
+    newBoard.board = this.board.map(row => row.map(cell => cell.clone()));
+    return newBoard;
+  }
 }
+
+export default Board;

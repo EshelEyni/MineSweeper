@@ -1,3 +1,5 @@
+import { FLAG_IMG, MINE_IMG } from '../constants.js';
+
 class Cell {
   isShown = false;
   isMine = false;
@@ -75,4 +77,15 @@ class Cell {
     const { rowIdx, columnIdx } = this.coords;
     return document.querySelector(`#cell-${rowIdx}-${columnIdx}`);
   }
+
+  clone() {
+    const newCell = new Cell(this.coords);
+    newCell.isShown = this.isShown;
+    newCell.isMine = this.isMine;
+    newCell.isFlagged = this.isFlagged;
+    newCell.surroundingMinesCount = this.surroundingMinesCount;
+    return newCell;
+  }
 }
+
+export default Cell;
