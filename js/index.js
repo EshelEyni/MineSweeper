@@ -1,3 +1,5 @@
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import App from './classes/app.js';
 import { SMILEY_IMG, SMILEY_SHOCKED_IMG } from './constants.js';
 import {
@@ -25,6 +27,7 @@ gameBoardElement.addEventListener('click', event => {
     const rowIdx = Number(target.dataset.rowIdx);
     const columnIdx = Number(target.dataset.columnIdx);
     const clickedCell = app.state.board.board[rowIdx][columnIdx];
+    if (clickedCell.isFlagged || clickedCell.isShown) return;
     const { isManualMineSetting } = app;
 
     if (isManualMineSetting) {

@@ -8,10 +8,10 @@ import {
   bestScoreElement,
   flagCounterElement,
 } from '../dom-elements.js';
-
 import { HEART_IMG, SMILEY_WIN_IMG, SMILEY_LOSE_IMG, SMILEY_MONOCLE_IMG } from '../constants.js';
-
 import { getRandomInt } from '../utils';
+
+
 
 class AppState {
   getState(name) {
