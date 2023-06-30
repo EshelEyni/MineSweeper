@@ -4,13 +4,8 @@
   margin: 0 10px;
 }
 
-.board-container {
+.board {
   flex-grow: 1;
-}
-
-.board-container table {
-  height: 100%;
-  width: 100%;
 }
 
 .board-header {

@@ -5,8 +5,8 @@ const safeClickCountElement = document.querySelector('.safe-click-count');
 const smileyContainerElement = document.querySelector('.smiley-container');
 const livesContainerElement = document.querySelector('.lives-container');
 const hintsContainerElement = document.querySelector('.hints-container');
-const bestScoreElement = document.querySelector('.best-score');
-const gameBoardElement = document.querySelector('.board-container');
+const bestScoreContainer = document.querySelector('.best-score-container');
+const boardTable = document.querySelector('.board');
 const flagCounterElement = document.querySelector('.flag-counter');
 const btnClickSafe = document.querySelector('.btn-safe-click');
 const btnDifficultyContainer = document.querySelector('.btn-difficulty-container');
@@ -20,8 +20,8 @@ export {
   smileyContainerElement,
   livesContainerElement,
   hintsContainerElement,
-  bestScoreElement,
-  gameBoardElement,
+  bestScoreContainer,
+  boardTable,
   flagCounterElement,
   btnClickSafe,
   btnDifficultyContainer,

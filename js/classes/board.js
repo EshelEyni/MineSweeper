@@ -1,6 +1,6 @@
 import Cell from './cell.js';
 import { getRandomUniqueNumbers } from '../utils.js';
-import { gameBoardElement } from '../dom-elements.js';
+import { boardTable } from '../dom-elements.js';
 
 class Board {
   board = [];
@@ -40,8 +40,8 @@ class Board {
       })
       .join('');
 
-    const strHTML = `<table><tbody>${rows}</tbody></table>`;
-    gameBoardElement.innerHTML = strHTML;
+    const strHTML = `<tbody>${rows}</tbody>`;
+    boardTable.innerHTML = strHTML;
 
     this.loopThroughCells(cell => cell.render());
   }
@@ -62,7 +62,7 @@ class Board {
     randomCoords.forEach(({ rowIdx, columnIdx }) => {
       this.setSurroundingMineCount(rowIdx, columnIdx);
     });
-  }
+  }  
 
   revealSurroundingTargetCells(targetRowIdx, targetColumnIdx) {
     const { board } = this;

@@ -1,15 +1,6 @@
-import { FLAG_IMG, MINE_IMG } from '../constants.js';
-
-/**
- * Represents a cell in the Minesweeper game.
- * @class
- */
+import { FLAG_IMG, MINE_IMG } from '../image-assets.js';
 
 class Cell {
-  /**
-   * Indicates whether the cell is shown.
-   * @type {boolean}
-   */
   isShown = false;
   isMine = false;
   isFlagged = false;
@@ -53,7 +44,7 @@ class Cell {
     return '';
   }
 
-  handleCellClick({ isManualMineSetting = false } = {}) {
+  onCellClick({ isManualMineSetting = false } = {}) {
     if (isManualMineSetting) {
       this.isMine = true;
       this.surroundingMinesCount = 0;
@@ -76,7 +67,7 @@ class Cell {
     }
   }
 
-  handleCellRightClick() {
+  onCellRightClick() {
     this.isFlagged = !this.isFlagged;
     this.render();
     return this.isFlagged;

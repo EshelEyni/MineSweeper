@@ -1,11 +1,11 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import App from './classes/app.js';
-import { SMILEY_IMG, SMILEY_SHOCKED_IMG } from './constants.js';
+import App from './classes/app/app.js';
+import { SMILEY_IMG, SMILEY_SHOCKED_IMG } from './image-assets.js';
 import {
   smileyContainerElement,
   hintsContainerElement,
-  gameBoardElement,
+  boardTable,
   btnClickSafe,
   btnDifficultyContainer,
   btnUndoAction,
@@ -19,73 +19,9 @@ smileyContainerElement.addEventListener('mousedown', () => (smileyContainerEleme
 smileyContainerElement.addEventListener('mouseup', () => (smileyContainerElement.innerHTML = SMILEY_IMG));
 smileyContainerElement.addEventListener('click', app.handleSmileyClick.bind(app));
 
-//  Cell click events
-gameBoardElement.addEventListener('click', event => {
-  const { target } = event;
-  if (target.classList.contains('cell')) {
-    if (!app.state.lives) return;
-    const rowIdx = Number(target.dataset.rowIdx);
-    const columnIdx = Number(target.dataset.columnIdx);
-    const clickedCell = app.state.board.board[rowIdx][columnIdx];
-    if (clickedCell.isFlagged || clickedCell.isShown) return;
-    const { isManualMineSetting } = app;
+boardTable.addEventListener('click', app.handleBoardClick.bind(app));
+boardTable.addEventListener('contextmenu', app.handleBoardContainerRightClick.bind(app));
 
-    if (isManualMineSetting) {
-      clickedCell.handleCellClick({ isManualMineSetting });
-      app.state.minesCount--;
-      if (!app.state.minesCount) app.isManualMineSetting = false;
-      app.state.board.setSurroundingMineCount(rowIdx, columnIdx);
-      app.setStateHistory();
-      return;
-    }
-
-    if (!app.isTimerRunning) app.handleGameStart();
-
-    if (app.isClickHint) {
-      app.state.hintsCount--;
-      app.state.board.handleHintCellClick(rowIdx, columnIdx);
-      app.toggleIsHintClick();
-      app.setStateHistory();
-      return;
-    }
-
-    clickedCell.handleCellClick();
-    clickedCell.render();
-
-    if (clickedCell.isMine) {
-      app.state.lives--;
-      app.renderLives();
-      if (!app.state.lives) {
-        app.handleGameLoss();
-      }
-      app.setStateHistory();
-      return;
-    }
-
-    app.state.board.revealSurroundingTargetCells(rowIdx, columnIdx);
-    app.setStateHistory();
-    app.checkGameVictory();
-  }
-});
-
-// Cell right click events
-gameBoardElement.addEventListener('contextmenu', event => {
-  event.preventDefault();
-  const { target } = event;
-  if (target.classList.contains('cell')) {
-    if (!app.state.lives) return;
-    const rowIdx = Number(target.dataset.rowIdx);
-    const columnIdx = Number(target.dataset.columnIdx);
-    const clickedCell = app.state.board.board[rowIdx][columnIdx];
-    const isCellFlagged = clickedCell.handleCellRightClick();
-    app.setFlagCounter(isCellFlagged);
-
-    if (!app.isTimerRunning) app.handleGameStart();
-    app.setStateHistory();
-  }
-});
-
-//  Button click events
 hintsContainerElement.addEventListener('click', event => {
   event.preventDefault();
   if (event.target.classList.contains('hint')) {
@@ -111,8 +47,6 @@ btnSetSevenBoom.addEventListener('click', app.handleBtnSetSevenBoomClick.bind(ap
 //  Keyboard events
 addEventListener('keydown', e => {
   if (e.key === 'e' && e.altKey && e.ctrlKey) {
-    console.log('cheat mode activated');
-    console.log(app.state.board);
     app.state.board.loopThroughCells(cell => {
       const cellElement = cell.getCellElement();
       cellElement.innerHTML = cell.getShownCellContent();

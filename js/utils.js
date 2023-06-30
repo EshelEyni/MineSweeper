@@ -4,15 +4,15 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-function getRandomUniqueNumbers(x, y) {
-  let numbers = Array.from({ length: x }, (_, i) => i);
+function getRandomUniqueNumbers(max, limit) {
+  const numbers = Array.from({ length: max }, (_, i) => i);
 
   numbers.forEach((_, i) => {
     const j = Math.floor(Math.random() * (i + 1));
     [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
   });
 
-  return numbers.slice(0, y);
+  return numbers.slice(0, limit);
 }
 
 export { getRandomInt, getRandomUniqueNumbers };
