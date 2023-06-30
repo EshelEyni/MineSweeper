@@ -1,6 +1,15 @@
 import { FLAG_IMG, MINE_IMG } from '../constants.js';
 
+/**
+ * Represents a cell in the Minesweeper game.
+ * @class
+ */
+
 class Cell {
+  /**
+   * Indicates whether the cell is shown.
+   * @type {boolean}
+   */
   isShown = false;
   isMine = false;
   isFlagged = false;
