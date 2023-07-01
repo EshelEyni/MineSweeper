@@ -11,3 +11,8 @@
   transition: all 0.3s;
   text-align: center;
 }
+
+.btn-set-mines-manually.active {
+  background-color: var(--mine-color);
+  color: black;
+}

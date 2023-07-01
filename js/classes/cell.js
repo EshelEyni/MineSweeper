@@ -10,81 +10,92 @@ class Cell {
     this.coords = coords;
   }
 
-  setState({ isShown, isMine, isFlagged, surroundingMinesCount }) {
-    if (isShown) this.isShown = isShown;
-    if (isMine) this.isMine = isMine;
-    if (isFlagged) this.isFlagged = isFlagged;
-    if (surroundingMinesCount) this.surroundingMinesCount = surroundingMinesCount;
+  setState(updates = {}) {
+    const validKeys = ['isShown', 'isMine', 'isFlagged', 'surroundingMinesCount', 'isHint'];
+
+    validKeys.forEach(key => {
+      if (key in updates) {
+        this[key] = updates[key];
+      }
+    });
+  }
+
+  incrementSurroundingMinesCount() {
+    this.surroundingMinesCount++;
+  }
+
+  onCellClick({ isManualMineSetting = false } = {}) {
+    if (this.isFlagged) return;
+    if (isManualMineSetting) {
+      this.setState({ isMine: true, surroundingMinesCount: 0 });
+      return;
+    }
+    this.setState({ isShown: true });
+    this.render();
+  }
+
+  onCellRightClick() {
+    this.setState({ isFlagged: !this.isFlagged });
+    this.render();
+    return this.isFlagged;
+  }
+
+  clone() {
+    const newCell = new Cell(this.coords);
+    newCell.setState({
+      isShown: this.isShown,
+      isMine: this.isMine,
+      isFlagged: this.isFlagged,
+      surroundingMinesCount: this.surroundingMinesCount,
+    });
+    return newCell;
   }
 
   render({ isSafeClick = false } = {}) {
-    const elCell = this.getCellElement();
-    if (this.isShown) this.#renderShownCell(elCell);
-    else this.#renderHiddenCell(elCell, isSafeClick);
+    const cellElement = this.#getCellElement();
+    if (this.isShown) this.#renderShownCell(cellElement);
+    else this.#renderHiddenCell(cellElement, isSafeClick);
   }
 
-  #renderShownCell(elCell) {
-    if (this.isHint) elCell.style.backgroundColor = 'var(--hint-color)';
-    if (this.isMine) elCell.style.backgroundColor = 'var(--mine-color)';
-    if (this.surroundingMinesCount) elCell.classList.add(`num-${this.surroundingMinesCount}`);
-    elCell.classList.add('showned');
-    elCell.innerHTML = this.getShownCellContent();
+  renderCheat() {
+    const cellElement = this.#getCellElement();
+    cellElement.innerHTML = this.#getShownCellContent();
+    // rerender to remove the class css effect
+    const classListSet = new Set(cellElement.classList);
+    if (classListSet.has('cheat')) this.render();
+    cellElement.classList.toggle('cheat');
   }
 
-  #renderHiddenCell(elCell, isSafeClick) {
-    elCell.classList.remove('showned');
-    if (isSafeClick) elCell.style.backgroundColor = 'rgb(56, 148, 197)';
-    else elCell.style.backgroundColor = '';
-    elCell.innerHTML = this.isFlagged ? FLAG_IMG : '';
-  }
-
-  getShownCellContent() {
+  #getShownCellContent() {
     if (this.surroundingMinesCount) return this.surroundingMinesCount;
     if (this.isMine) return MINE_IMG;
     return '';
   }
 
-  onCellClick({ isManualMineSetting = false } = {}) {
-    if (isManualMineSetting) {
-      this.isMine = true;
-      this.surroundingMinesCount = 0;
-      return;
-    }
-    if (this.isFlagged) return;
-    this.isShown = true;
-
-    const elCell = this.getCellElement();
-
+  #renderShownCell(cellElement) {
+    if (this.isHint) cellElement.style.backgroundColor = 'var(--hint-color)';
     if (this.isMine) {
-      elCell.innerHTML = MINE_IMG;
-      elCell.style.backgroundColor = 'var(--mine-color)';
-      return;
+      cellElement.innerHTML = MINE_IMG;
+      cellElement.style.backgroundColor = 'var(--mine-color)';
     }
-    this.render();
-
-    if (this.surroundingMinesCount && !this.isMine) {
-      elCell.innerHTML = this.surroundingMinesCount;
+    if (this.surroundingMinesCount) {
+      cellElement.classList.add(`num-${this.surroundingMinesCount}`);
+      cellElement.innerHTML = this.surroundingMinesCount;
     }
+    cellElement.classList.add('showned');
+    cellElement.innerHTML = this.#getShownCellContent();
   }
 
-  onCellRightClick() {
-    this.isFlagged = !this.isFlagged;
-    this.render();
-    return this.isFlagged;
+  #renderHiddenCell(cellElement, isSafeClick) {
+    cellElement.classList.remove('showned');
+    if (isSafeClick) cellElement.style.backgroundColor = 'rgb(56, 148, 197)';
+    else cellElement.style.backgroundColor = '';
+    cellElement.innerHTML = this.isFlagged ? FLAG_IMG : '';
   }
 
-  getCellElement() {
+  #getCellElement() {
     const { rowIdx, columnIdx } = this.coords;
     return document.querySelector(`#cell-${rowIdx}-${columnIdx}`);
-  }
-
-  clone() {
-    const newCell = new Cell(this.coords);
-    newCell.isShown = this.isShown;
-    newCell.isMine = this.isMine;
-    newCell.isFlagged = this.isFlagged;
-    newCell.surroundingMinesCount = this.surroundingMinesCount;
-    return newCell;
   }
 }
 

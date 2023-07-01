@@ -86,10 +86,6 @@ class AppState {
     this.isTimerRunning = !this.isTimerRunning;
   }
 
-  setState(newState) {
-    Object.assign(this, newState);
-  }
-
   setTimer() {
     this.incrementTimer();
     const minutes = Math.floor(this.gameTime / 60);
@@ -97,25 +93,25 @@ class AppState {
     return { minutes, seconds };
   }
 
+  setPrevState(prevState) {
+    Object.assign(this, prevState);
+  }
+
   startGame() {
     if (this.isTimerRunning) return;
-    if (!this.isMinesSet) this.board.setMines(this.minesCount);
+    if (!this.isMinesSet) this.board.setRandomMines(this.minesCount);
     this.toggleIsMinesSet();
     this.toggleIsTimerRunning();
   }
 
   onGameLoss() {
-    clearInterval(this.intervalTimerId);
-    this.isTimerRunning = false;
-
+    this.#resetTimer();
     this.board.loopThroughCells(cell => {
       if (cell.isMine) {
-        cell.isShown = true;
+        cell.setState({ isShown: true });
         cell.render();
       }
     });
-
-    smileyContainerElement.innerHTML = SMILEY_LOSE_IMG;
   }
 
   verifyGameVictory() {
@@ -131,17 +127,22 @@ class AppState {
   }
 
   #onGameWin() {
+    this.#resetTimer();
     this.#setBestScore();
-    clearInterval(this.intervalTimerId);
-    this.isTimerRunning = false;
   }
 
   #setBestScore() {
     const { difficultyName } = this;
-    const prevBestScore = window.localStorage.getItem(difficultyName);
-    const endGameTime = (Date.now() - this.gameTime) / 1000;
-    if (prevBestScore !== null && parseFloat(prevBestScore) < endGameTime) return;
-    window.localStorage.setItem(difficultyName, endGameTime);
+    const storageValue = window.localStorage.getItem(difficultyName);
+    const prevBestScore = storageValue ? Number(storageValue) : null;
+    const isBestScore = prevBestScore === null || prevBestScore > this.gameTime;
+    if (!isBestScore) return;
+    window.localStorage.setItem(difficultyName, this.gameTime);
+  }
+
+  #resetTimer() {
+    clearInterval(this.intervalTimerId);
+    this.toggleIsTimerRunning();
   }
 }
 

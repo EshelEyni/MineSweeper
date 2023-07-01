@@ -1,4 +1,9 @@
 class AppHistory {
+  constructor() {
+    this.prevState = null;
+    this.history = [];
+  }
+
   addState(state) {
     this.history.push(this.prevState);
     this.prevState = this.#setCopyOfState(state);
@@ -19,9 +24,6 @@ class AppHistory {
       board: state.board.clone(),
     };
   }
-
-  history = [null];
-  prevState = null;
 }
 
 export default AppHistory;

@@ -26,6 +26,94 @@ class Board {
       );
   }
 
+  setRandomMines(minesCount) {
+    const { boardSqrt } = this;
+    const totalCells = boardSqrt ** 2;
+    const randomCoords = getRandomUniqueNumbers(totalCells, minesCount).map(randomCoord => {
+      const rowIdx = Math.floor(randomCoord / boardSqrt);
+      const columnIdx = randomCoord % boardSqrt;
+      return { rowIdx, columnIdx };
+    });
+
+    randomCoords.forEach(({ rowIdx, columnIdx }) => {
+      const cell = this.board[rowIdx][columnIdx];
+      cell.isMine = true;
+    });
+
+    randomCoords.forEach(({ rowIdx, columnIdx }) => {
+      this.setSurroundingMineCount(rowIdx, columnIdx);
+    });
+  }
+
+  revealSurroundingTargetCells(targetRowIdx, targetColumnIdx) {
+    const { board } = this;
+    const targetCell = board[targetRowIdx][targetColumnIdx];
+    if (targetCell.surroundingMinesCount) return;
+
+    const surroundingCells = this.#getSurroundingCells(targetRowIdx, targetColumnIdx, {
+      excludeDiagonalCells: true,
+    });
+
+    surroundingCells.forEach(cell => {
+      const { rowIdx, columnIdx } = cell.coords;
+      const isRecurse = !cell.surroundingMinesCount && !cell.isShown;
+      if (cell.isMine) return;
+      cell.setState({ isShown: true });
+      cell.render(rowIdx, columnIdx);
+      if (!isRecurse) return;
+      this.revealSurroundingTargetCells(rowIdx, columnIdx);
+    });
+  }
+
+  setSurroundingMineCount(rowIdx, columnIdx) {
+    this.loopThroughCells(cell => {
+      if (cell.isMine) return;
+
+      const { rowIdx: cellRowIdx, columnIdx: cellColumnIdx } = cell.coords;
+      const isSurroundingCell =
+        cellRowIdx >= rowIdx - 1 &&
+        cellRowIdx <= rowIdx + 1 &&
+        cellColumnIdx >= columnIdx - 1 &&
+        cellColumnIdx <= columnIdx + 1;
+
+      if (isSurroundingCell) cell.incrementSurroundingMinesCount();
+    });
+  }
+
+  handleHintCellClick(targetRowIdx, targetColumnIdx) {
+    const hintedCells = this.#getSurroundingCells(targetRowIdx, targetColumnIdx);
+
+    hintedCells.forEach(cell => {
+      if (cell.isShown) return;
+      cell.setState({ isShown: true, isHint: true });
+      cell.render();
+    });
+
+    setTimeout(() => {
+      hintedCells.forEach(cell => {
+        if (!cell.isHint) return;
+        cell.setState({ isShown: false, isHint: false });
+        cell.render();
+      });
+    }, 2500);
+  }
+
+  loopThroughCells(callback) {
+    const { board } = this;
+    board.forEach((row, rowIdx) => {
+      row.forEach((_, columnIdx) => {
+        const cell = board[rowIdx][columnIdx];
+        callback(cell);
+      });
+    });
+  }
+
+  clone() {
+    const newBoard = new Board(this.boardSqrt);
+    newBoard.board = this.board.map(row => row.map(cell => cell.clone()));
+    return newBoard;
+  }
+
   renderBoard() {
     const rows = this.board
       .map(row => {
@@ -44,61 +132,6 @@ class Board {
     boardTable.innerHTML = strHTML;
 
     this.loopThroughCells(cell => cell.render());
-  }
-
-  setMines(minesCount) {
-    const { boardSqrt } = this;
-    const totalCells = boardSqrt ** 2;
-    const randomCoords = getRandomUniqueNumbers(totalCells, minesCount).map(randomCoord => {
-      const rowIdx = Math.floor(randomCoord / boardSqrt);
-      const columnIdx = randomCoord % boardSqrt;
-      return { rowIdx, columnIdx };
-    });
-
-    randomCoords.forEach(({ rowIdx, columnIdx }) => {
-      const cell = this.board[rowIdx][columnIdx];
-      cell.isMine = true;
-    });
-    randomCoords.forEach(({ rowIdx, columnIdx }) => {
-      this.setSurroundingMineCount(rowIdx, columnIdx);
-    });
-  }  
-
-  revealSurroundingTargetCells(targetRowIdx, targetColumnIdx) {
-    const { board } = this;
-    const targetCell = board[targetRowIdx][targetColumnIdx];
-    if (targetCell.surroundingMinesCount) return;
-
-    const surroundingCells = this.#getSurroundingCells(targetRowIdx, targetColumnIdx, {
-      excludeDiagonalCells: true,
-    });
-
-    surroundingCells.forEach(cell => {
-      const { rowIdx, columnIdx } = cell.coords;
-      const isRecurse = !cell.isMine && !cell.surroundingMinesCount && !cell.isShown;
-
-      if (cell.isMine === false) {
-        cell.isShown = true;
-        cell.render(rowIdx, columnIdx);
-      }
-
-      if (isRecurse) this.revealSurroundingTargetCells(rowIdx, columnIdx);
-    });
-  }
-
-  setSurroundingMineCount(rowIdx, columnIdx) {
-    this.loopThroughCells(cell => {
-      if (cell.isMine) return;
-
-      const { rowIdx: cellRowIdx, columnIdx: cellColumnIdx } = cell.coords;
-      const isSurroundingCell =
-        cellRowIdx >= rowIdx - 1 &&
-        cellRowIdx <= rowIdx + 1 &&
-        cellColumnIdx >= columnIdx - 1 &&
-        cellColumnIdx <= columnIdx + 1;
-
-      if (isSurroundingCell) cell.surroundingMinesCount++;
-    });
   }
 
   #getSurroundingCells(
@@ -124,47 +157,11 @@ class Board {
 
     this.loopThroughCells(cell => {
       const { rowIdx, columnIdx } = cell.coords;
-      if (isLegitCell(rowIdx, columnIdx)) surroundingCells.push(cell);
+      if (!isLegitCell(rowIdx, columnIdx)) return;
+      surroundingCells.push(cell);
     });
 
     return surroundingCells;
-  }
-
-  handleHintCellClick(targetRowIdx, targetColumnIdx) {
-    const hintedCells = this.#getSurroundingCells(targetRowIdx, targetColumnIdx);
-
-    hintedCells.forEach(cell => {
-      if (cell.isShown === false) {
-        cell.isShown = cell.isHint = true;
-        cell.render();
-      }
-    });
-
-    setTimeout(() => {
-      hintedCells.forEach(cell => {
-        if (cell.isHint === true) {
-          cell.isShown = false;
-          cell.isHint = false;
-          cell.render();
-        }
-      });
-    }, 2500);
-  }
-
-  loopThroughCells(callback) {
-    const { board } = this;
-    board.forEach((row, rowIdx) => {
-      row.forEach((_, columnIdx) => {
-        const cell = board[rowIdx][columnIdx];
-        callback(cell);
-      });
-    });
-  }
-
-  clone() {
-    const newBoard = new Board(this.boardSqrt);
-    newBoard.board = this.board.map(row => row.map(cell => cell.clone()));
-    return newBoard;
   }
 }
 

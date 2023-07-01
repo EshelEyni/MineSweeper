@@ -5,7 +5,11 @@ import AppRenderer from './app-renderer';
 
 class App {
   constructor() {
-    this.renderer.render();
+    this.renderer.app();
+  }
+
+  handleSmileyClick() {
+    this.#onResetGame(this.state.difficultyName);
   }
 
   handleBoardClick(event) {
@@ -18,14 +22,14 @@ class App {
 
     const { isManualMineSetting, isTimerRunning, isClickHint } = this.state;
     if (isManualMineSetting) {
-      this.#onManualMineSetting();
+      this.#onManualMineSetting(clickedCell);
       return;
     }
 
     if (!isTimerRunning) this.#onGameStart();
 
     if (isClickHint) {
-      this.#onClickHint();
+      this.#onClickHint(rowIdx, columnIdx);
       return;
     }
 
@@ -33,14 +37,14 @@ class App {
     clickedCell.render();
 
     if (clickedCell.isMine) {
-      this.#onMineClick();
+      this.#onMineClick(rowIdx, columnIdx);
       return;
     }
 
     this.state.board.revealSurroundingTargetCells(rowIdx, columnIdx);
     this.history.addState(this.state);
     const isVicotry = this.state.verifyGameVictory();
-    if (isVicotry) this.renderer.renderSmileyWin();
+    if (isVicotry) this.renderer.smileyWin();
   }
 
   handleBoardContainerRightClick(event) {
@@ -56,30 +60,59 @@ class App {
     this.history.addState(this.state);
   }
 
-  #onGameStart() {
-    this.state.startGame();
-    this.renderer.renderTimer({ minutes: 0, seconds: 0 });
-    this.state.intervalTimerId = setInterval(() => {
-      const time = this.state.setTimer();
-      this.renderer.renderTimer(time);
-    }, 1000);
+  handleHintContainerClick(event) {
+    event.preventDefault();
+    if (event.target.classList.contains('hint')) {
+      event.target.style.backgroundColor = 'var(--hint-color)';
+      this.state.toggleIsClickHint();
+    }
   }
 
-  #setFlagCounter(isFlagged) {
-    if (isFlagged) this.state.decrementFlagCount();
-    else this.state.incrementFlagCount();
-    this.renderer.renderFlagCounter();
+  handleBtnSafeClick() {
+    if (!this.state.safeClickCount) return;
+    if (!this.isMinesSet) this.state.board.setRandomMines(this.state.minesCount);
+    this.state.decrementSafeClickCount();
+    this.renderer.safeClickCount();
+
+    const safeCells = [];
+
+    this.state.board.loopThroughCells(cell => {
+      if (!cell.isMine && !cell.isShown) safeCells.push(cell);
+    });
+    if (!safeCells.length) return;
+
+    const safeCell = safeCells[getRandomInt(0, safeCells.length - 1)];
+    safeCell.render({ isSafeClick: true });
+
+    setTimeout(() => {
+      safeCell.render();
+    }, 2000);
+  }
+
+  handleBtnUndoActionClick() {
+    const prevState = this.history.getState();
+    if (!prevState) return;
+    this.state.setPrevState(prevState);
+    this.renderer.app({ isUndoAction: true });
+  }
+
+  handleSetDifficultyBtnClick(event) {
+    const { difficultyName } = event.target.dataset;
+    this.#onResetGame(difficultyName);
+    this.renderer.smileyDefault();
   }
 
   handleBtnSetMinesManuallyClick() {
+    if (this.state.isMinesSet) return;
+    this.renderer.toggleBtnActiveSetMinesManually();
     this.state.toggleIsManualMineSetting();
   }
 
   handleBtnSetSevenBoomClick() {
     clearInterval(this.intervalTimerId);
-    this.isTimerRunning = false;
+    this.state.toggleIsTimerRunning();
     this.state.board.setBoard();
-    this.renderer.render();
+    this.renderer.app();
 
     let index = 1;
     this.state.board.loopThroughCells(cell => {
@@ -92,67 +125,39 @@ class App {
     });
   }
 
-  handleSetDifficultyBtnClick(difficultySetting) {
-    this.state = new AppState(difficultySetting);
-    this.prevAppState = new AppState(difficultySetting);
-    this.stateHistory = [];
-    const { intervalTimerId } = this.state;
-    clearInterval(intervalTimerId);
-    this.renderer.render();
+  #onResetGame(difficultyName) {
+    clearInterval(this.state.intervalTimerId);
+    this.state = new AppState(difficultyName);
+    this.history = new AppHistory(this.state);
+    this.renderer = new AppRenderer(this.state);
+    this.renderer.app();
   }
 
-  handleSmileyClick() {
-    this.state = new AppState(this.state.difficultyName);
-    this.prevAppState = new AppState(this.state.difficultyName);
-    this.stateHistory = [];
-    const { intervalTimerId } = this.state;
-    clearInterval(intervalTimerId);
-    this.renderer.render();
-  }
-
-  handleBtnSafeClick() {
-    if (!this.state.safeClickCount) return;
-    if (!this.isMinesSet) this.state.board.setMines(this.state.minesCount);
-    this.state.decrementSafeClickCount();
-    this.renderer.renderSafeClickCount();
-
-    const safeCells = [];
-
-    this.state.board.loopThroughCells(cell => {
-      if (!cell.isMine && !cell.isShown) safeCells.push(cell);
-    });
-    if (!safeCells.length) return;
-
-    const safeCell = safeCells[getRandomInt(0, safeCells.length - 1)];
-    safeCell.isSafeClick = true;
-    safeCell.render({ isSafeClick: true });
-
-    setTimeout(() => {
-      safeCell.isSafeClick = false;
-      safeCell.render();
-    }, 2000);
-  }
-
-  handleBtnUndoActionClick() {
-    const lastStateSnapshot = this.history.getState();
-    if (!lastStateSnapshot) return;
-    this.state.setState(lastStateSnapshot);
-    this.state.board.renderBoard();
-    this.renderer.renderFlagCounter();
-    this.renderer.renderLives();
-    this.renderer.renderSafeClickCount();
-    this.renderer.renderHints();
-  }
-
-  #onManualMineSetting() {
+  #onManualMineSetting(clickedCell) {
+    if (clickedCell.isMine) return;
+    const { isManualMineSetting } = this.state;
     clickedCell.onCellClick({ isManualMineSetting });
     this.state.decrementMinesCount();
-    if (!this.state.minesCount) this.state.toggleIsManualMineSetting();
+    if (!this.state.minesCount) {
+      this.state.toggleIsManualMineSetting();
+      this.state.toggleIsMinesSet();
+      this.renderer.toggleBtnActiveSetMinesManually();
+    }
+    const { rowIdx, columnIdx } = clickedCell.coords;
     this.state.board.setSurroundingMineCount(rowIdx, columnIdx);
     this.history.addState(this.state);
   }
 
-  #onClickHint() {
+  #onGameStart() {
+    this.state.startGame();
+    this.renderer.timer({ minutes: 0, seconds: 0 });
+    this.state.intervalTimerId = setInterval(() => {
+      const time = this.state.setTimer();
+      this.renderer.timer(time);
+    }, 1000);
+  }
+
+  #onClickHint(rowIdx, columnIdx) {
     this.state.board.handleHintCellClick(rowIdx, columnIdx);
     this.state.decrementHintsCount();
     this.state.toggleIsClickHint();
@@ -161,12 +166,18 @@ class App {
 
   #onMineClick() {
     this.state.decrementLives();
-    this.renderer.renderLives();
+    this.renderer.lives();
     if (!this.state.lives) {
       this.state.onGameLoss();
-      this.renderer.renderSmileyLoss();
+      this.renderer.smileyLoss();
     }
     this.history.addState(this.state);
+  }
+
+  #setFlagCounter(isFlagged) {
+    if (isFlagged) this.state.decrementFlagCount();
+    else this.state.incrementFlagCount();
+    this.renderer.flagCounter();
   }
 
   // Fields

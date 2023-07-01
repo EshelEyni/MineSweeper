@@ -1,4 +1,4 @@
-.board-wrapper {
+.board-container {
   display: flex;
   flex-direction: column;
   margin: 0 10px;

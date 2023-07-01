@@ -6,43 +6,41 @@ import {
   hintsContainerElement,
   bestScoreContainer,
   flagCounterElement,
+  btnSetMinesManually,
 } from '../../dom-elements.js';
-import { HEART_IMG, SMILEY_IMG, SMILEY_WIN_IMG, SMILEY_LOSE_IMG, SMILEY_MONOCLE_IMG } from '../../image-assets.js';
+import {
+  HEART_IMG,
+  SMILEY_IMG,
+  SMILEY_WIN_IMG,
+  SMILEY_LOSE_IMG,
+  SMILEY_MONOCLE_IMG,
+  SMILEY_SHOCKED_IMG,
+} from '../../image-assets.js';
 
 class AppRenderer {
   constructor(appState) {
     this.appState = appState;
   }
 
-  render() {
+  app({ isUndoAction = false } = {}) {
+    this.safeClickCount();
+    this.hints();
     this.appState.board.renderBoard();
-    this.renderFlagCounter();
-    this.renderLives();
-    this.renderTimer();
-    this.renderSafeClickCount();
-    this.renderHints();
-    this.renderBestScore();
+    this.lives();
+    this.flagCounter();
+    if (isUndoAction) return;
+    this.timer();
+    this.bestScore();
   }
 
-  renderBestScore() {
-    const { boardSqrt } = this.appState;
-    const scoreKey = 'BestScoreLevel=' + boardSqrt;
-    const previousBestScore = window.localStorage.getItem(scoreKey);
-    if (previousBestScore === null) {
-      bestScoreContainer.innerHTML = `<span>BEST SCORE: 00:00</span>`;
-      return;
-    }
-    bestScoreContainer.innerHTML = `<span>BEST SCORE: ${previousBestScore}</span>`;
-  }
-
-  renderSafeClickCount() {
+  safeClickCount() {
     const { safeClickCount } = this.appState;
     if (safeClickCount >= 0) {
       safeClickCountElement.innerHTML = `${safeClickCount}`;
     }
   }
 
-  renderHints() {
+  hints() {
     const { hintsCount } = this.appState;
     let hints = '';
     for (let i = 0; i < hintsCount; i++) {
@@ -51,28 +49,23 @@ class AppRenderer {
     hintsContainerElement.innerHTML = hints;
   }
 
-  renderTimer(time) {
-    if (!time) {
-      timerElement.innerHTML = '000';
+  bestScore() {
+    const { difficultyName } = this.appState;
+    const previousBestScore = window.localStorage.getItem(difficultyName);
+    if (previousBestScore === null) {
+      bestScoreContainer.innerHTML = `<span>BEST SCORE: 00:00</span>`;
       return;
     }
-    const { minutes, seconds } = time;
-    const formattedMinutes = minutes.toString();
-    const formattedSeconds = seconds.toString().padStart(2, '0');
-    timerElement.innerHTML = `${formattedMinutes}:${formattedSeconds}`;
+    const minutes = Math.floor(previousBestScore / 60);
+    const seconds = previousBestScore % 60;
+    bestScoreContainer.innerHTML = `<span>BEST SCORE: ${minutes}:${seconds}</span>`;
   }
 
-  renderFlagCounter() {
-    const { flagCount } = this.appState;
-    const paddingNum = flagCount >= 0 ? 3 : 0;
-    const formmatedFlagCount = flagCount.toString().padStart(paddingNum, '0');
-    flagCounterElement.innerHTML = `${formmatedFlagCount}`;
-  }
-
-  renderLives() {
+  lives() {
     if (!this.isTimerRunning) {
-      livesContainerElement.innerHTML = '';
-      for (let i = 0; i < this.appState.lives; i++) livesContainerElement.innerHTML += `${HEART_IMG}`;
+      let lives = '';
+      for (let i = 0; i < this.appState.lives; i++) lives += `${HEART_IMG}`;
+      livesContainerElement.innerHTML = lives;
       return;
     }
 
@@ -82,12 +75,42 @@ class AppRenderer {
     });
   }
 
-  renderSmileyLoss() {
+  smileyLoss() {
+    smileyContainerElement.innerHTML = SMILEY_LOSE_IMG;
+  }
+
+  smileyWin() {
     smileyContainerElement.innerHTML = SMILEY_WIN_IMG;
   }
 
-  renderSmileyWin() {
-    smileyContainerElement.innerHTML = SMILEY_WIN_IMG;
+  smileyShocked() {
+    smileyContainerElement.innerHTML = SMILEY_SHOCKED_IMG;
+  }
+
+  smileyDefault() {
+    smileyContainerElement.innerHTML = SMILEY_IMG;
+  }
+
+  toggleBtnActiveSetMinesManually() {
+    btnSetMinesManually.classList.toggle('active');
+  }
+
+  flagCounter() {
+    const { flagCount } = this.appState;
+    const paddingNum = flagCount >= 0 ? 3 : 0;
+    const formmatedFlagCount = flagCount.toString().padStart(paddingNum, '0');
+    flagCounterElement.innerHTML = `${formmatedFlagCount}`;
+  }
+
+  timer(time) {
+    if (!time) {
+      timerElement.innerHTML = '000';
+      return;
+    }
+    const { minutes, seconds } = time;
+    const formattedMinutes = minutes.toString();
+    const formattedSeconds = seconds.toString().padStart(2, '0');
+    timerElement.innerHTML = `${formattedMinutes}:${formattedSeconds}`;
   }
 }
 
