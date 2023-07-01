@@ -1,5 +1,4 @@
 
-```markdown
 # Minesweeper
 
 A classic Minesweeper game built using vanilla JavaScript and CSS, following the Object-Oriented Programming (OOP) paradigm. The application is bundled using Parcel.
