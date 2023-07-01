@@ -1,4 +1,4 @@
-import Board from '../board.js';
+import Board from '../board/board.js';
 
 const GameConfig = {
   easy: {

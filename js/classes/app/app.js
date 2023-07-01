@@ -1,4 +1,4 @@
-import { getRandomInt } from '../../utils.js';
+import { getRandomInt } from '../../utils/utils.js';
 import AppState from './app-state';
 import AppHistory from './app-history';
 import AppRenderer from './app-renderer';

@@ -1,6 +1,6 @@
-import Cell from './cell.js';
-import { getRandomUniqueNumbers } from '../utils.js';
-import { boardTable } from '../dom-elements.js';
+import Cell from '../cell/cell.js';
+import { getRandomUniqueNumbers } from '../../utils/utils.js';
+import { boardTable } from '../../dom-elements.js';
 
 class Board {
   board = [];

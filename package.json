@@ -4,7 +4,7 @@
   "description": "A Clone for the Classic Game",
   "default": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest --reporter verbose",
     "start": "parcel index.html",
     "build": "parcel build index.html --dist-dir ./dist"
   },
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "core-js": "^3.31.0",
-    "regenerator-runtime": "^0.13.11"
+    "regenerator-runtime": "^0.13.11",
+    "vitest": "^0.32.2"
   }
 }

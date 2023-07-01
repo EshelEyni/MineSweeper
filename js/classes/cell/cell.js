@@ -1,4 +1,4 @@
-import { FLAG_IMG, MINE_IMG } from '../image-assets.js';
+import { FLAG_IMG, MINE_IMG } from '../../image-assets.js';
 
 class Cell {
   isShown = false;
@@ -7,6 +7,11 @@ class Cell {
   surroundingMinesCount = 0;
 
   constructor(coords) {
+    if (coords === undefined) throw new Error('No coordinates provided');
+    if (typeof coords !== 'object') throw new Error('Invalid coordinates provided');
+    const { rowIdx, columnIdx } = coords;
+    if (typeof rowIdx !== 'number' || typeof columnIdx !== 'number')
+      throw new Error('Invalid coordinates provided');
     this.coords = coords;
   }
 

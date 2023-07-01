@@ -11,14 +11,8 @@ import {
   btnSetMinesManually,
   btnSetSevenBoom,
 } from './dom-elements.js';
-import Cell from './classes/cell';
 
 const app = new App();
-
-const testCell = new Cell({ rowIdx: 0, columnIdx: 0 });
-console.log(testCell);
-console.log(testCell.clone());
-
 
 smileyContainerElement.addEventListener('mousedown', app.renderer.smileyShocked);
 smileyContainerElement.addEventListener('mouseup', app.renderer.smileyDefault);
