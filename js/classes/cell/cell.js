@@ -78,22 +78,19 @@ class Cell {
   }
 
   #renderShownCell(cellElement) {
-    if (this.isHint) cellElement.style.backgroundColor = 'var(--hint-color)';
-    if (this.isMine) {
-      cellElement.innerHTML = MINE_IMG;
-      cellElement.style.backgroundColor = 'var(--mine-color)';
-    }
+    cellElement.innerHTML = this.#getShownCellContent();
+    if (this.isMine) cellElement.style.backgroundColor = 'var(--mine-color)';
     if (this.surroundingMinesCount) {
       cellElement.classList.add(`num-${this.surroundingMinesCount}`);
       cellElement.innerHTML = this.surroundingMinesCount;
     }
+    if (this.isHint) cellElement.style.backgroundColor = 'var(--hint-color)';
     cellElement.classList.add('showned');
-    cellElement.innerHTML = this.#getShownCellContent();
   }
 
   #renderHiddenCell(cellElement, isSafeClick) {
     cellElement.classList.remove('showned');
-    if (isSafeClick) cellElement.style.backgroundColor = 'rgb(56, 148, 197)';
+    if (isSafeClick) cellElement.style.backgroundColor = 'var(--safe-click-color)';
     else cellElement.style.backgroundColor = '';
     cellElement.innerHTML = this.isFlagged ? FLAG_IMG : '';
   }

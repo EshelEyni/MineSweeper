@@ -6,6 +6,10 @@ class Board {
   board = [];
 
   constructor(boardSqrt) {
+    if (!boardSqrt) throw new Error('boardSqrt is required');
+    if (typeof boardSqrt !== 'number') throw new Error('boardSqrt must be a number');
+    const validSqrts = new Set([8, 12, 16]);
+    if (!validSqrts.has(boardSqrt)) throw new Error('Invalid boardSqrt');
     this.boardSqrt = boardSqrt;
     this.setBoard();
   }
