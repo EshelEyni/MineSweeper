@@ -29,6 +29,7 @@ class App {
     if (!isTimerRunning) this.#onGameStart();
 
     if (isClickHint) {
+      console.log('hint');
       this.#onClickHint(rowIdx, columnIdx);
       return;
     }

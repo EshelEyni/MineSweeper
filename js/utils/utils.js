@@ -23,4 +23,7 @@ function getRandomUniqueNumbers(max, limit) {
   return numbers.slice(0, limit);
 }
 
-export { getRandomInt, getRandomUniqueNumbers };
+const isTestEnv = process.env.NODE_ENV === 'test';
+
+
+export { getRandomInt, getRandomUniqueNumbers, isTestEnv };

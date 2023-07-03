@@ -32,8 +32,9 @@ const GameConfig = {
 
 class AppState {
   constructor(difficulty = 'medium') {
+    this.hintDuration = 2500;
     Object.assign(this, GameConfig[difficulty]);
-    this.board = new Board(this.boardSqrt);
+    this.board = new Board(this.boardSqrt, this.hintDuration);
     this.intervalTimerId;
     this.gameTime = 0;
     this.isTimerRunning = false;

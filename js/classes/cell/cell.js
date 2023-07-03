@@ -1,4 +1,5 @@
 import { FLAG_IMG, MINE_IMG } from '../../image-assets.js';
+import { isTestEnv } from '../../utils/utils';
 
 class Cell {
   isShown = false;
@@ -23,6 +24,17 @@ class Cell {
         this[key] = updates[key];
       }
     });
+  }
+
+  getState() {
+    return {
+      coords: this.coords,
+      isShown: this.isShown,
+      isMine: this.isMine,
+      isFlagged: this.isFlagged,
+      surroundingMinesCount: this.surroundingMinesCount,
+      isHint: this.isHint,
+    };
   }
 
   incrementSurroundingMinesCount() {
@@ -79,18 +91,19 @@ class Cell {
 
   #renderShownCell(cellElement) {
     cellElement.innerHTML = this.#getShownCellContent();
-    if (this.isMine) cellElement.style.backgroundColor = 'var(--mine-color)';
-    if (this.surroundingMinesCount) {
-      cellElement.classList.add(`num-${this.surroundingMinesCount}`);
-      cellElement.innerHTML = this.surroundingMinesCount;
-    }
-    if (this.isHint) cellElement.style.backgroundColor = 'var(--hint-color)';
+    if (this.isMine)
+      cellElement.style.backgroundColor = isTestEnv ? '#d40505cc' : 'var(--mine-color)';
+    if (this.surroundingMinesCount) cellElement.classList.add(`num-${this.surroundingMinesCount}`);
+    if (this.isHint)
+      cellElement.style.backgroundColor = isTestEnv ? '#e9d66f' : 'var(--hint-color)';
     cellElement.classList.add('showned');
   }
 
   #renderHiddenCell(cellElement, isSafeClick) {
-    cellElement.classList.remove('showned');
-    if (isSafeClick) cellElement.style.backgroundColor = 'var(--safe-click-color)';
+    const classListSet = new Set(cellElement.classList);
+    if (classListSet.has('showned')) cellElement.classList.remove('showned');
+    if (isSafeClick)
+      cellElement.style.backgroundColor = isTestEnv ? '#3894c5' : 'var(--safe-click-color)';
     else cellElement.style.backgroundColor = '';
     cellElement.innerHTML = this.isFlagged ? FLAG_IMG : '';
   }

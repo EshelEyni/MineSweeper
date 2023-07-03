@@ -1,24 +1,24 @@
 import Cell from '../cell/cell.js';
 import { getRandomUniqueNumbers } from '../../utils/utils.js';
-import { boardTable } from '../../dom-elements.js';
 
 class Board {
   board = [];
 
-  constructor(boardSqrt) {
+  constructor(boardSqrt, hintDuration = 2500) {
     if (!boardSqrt) throw new Error('boardSqrt is required');
     if (typeof boardSqrt !== 'number') throw new Error('boardSqrt must be a number');
     const validSqrts = new Set([8, 12, 16]);
     if (!validSqrts.has(boardSqrt)) throw new Error('Invalid boardSqrt');
-    this.boardSqrt = boardSqrt;
+    this.sqrt = boardSqrt;
+    this.hintDuration = hintDuration;
     this.setBoard();
   }
 
   setBoard() {
-    this.board = Array(this.boardSqrt)
+    this.board = Array(this.sqrt)
       .fill()
       .map((_, rowIdx) =>
-        Array(this.boardSqrt)
+        Array(this.sqrt)
           .fill()
           .map(
             (_, columnIdx) =>
@@ -31,7 +31,9 @@ class Board {
   }
 
   setRandomMines(minesCount) {
-    const { boardSqrt } = this;
+    const validMinesCount = new Set([12, 30, 64]);
+    if (!validMinesCount.has(minesCount)) throw new Error('Invalid minesCount');
+    const { sqrt: boardSqrt } = this;
     const totalCells = boardSqrt ** 2;
     const randomCoords = getRandomUniqueNumbers(totalCells, minesCount).map(randomCoord => {
       const rowIdx = Math.floor(randomCoord / boardSqrt);
@@ -52,7 +54,7 @@ class Board {
   revealSurroundingTargetCells(targetRowIdx, targetColumnIdx) {
     const { board } = this;
     const targetCell = board[targetRowIdx][targetColumnIdx];
-    if (targetCell.surroundingMinesCount) return;
+    if (targetCell.surroundingMinesCount || targetCell.isMine) return;
 
     const surroundingCells = this.#getSurroundingCells(targetRowIdx, targetColumnIdx, {
       excludeDiagonalCells: true,
@@ -69,18 +71,11 @@ class Board {
     });
   }
 
-  setSurroundingMineCount(rowIdx, columnIdx) {
-    this.loopThroughCells(cell => {
+  setSurroundingMineCount(targetRowIdx, targetColumnIdx) {
+    const surroundingCells = this.#getSurroundingCells(targetRowIdx, targetColumnIdx);
+    surroundingCells.forEach(cell => {
       if (cell.isMine) return;
-
-      const { rowIdx: cellRowIdx, columnIdx: cellColumnIdx } = cell.coords;
-      const isSurroundingCell =
-        cellRowIdx >= rowIdx - 1 &&
-        cellRowIdx <= rowIdx + 1 &&
-        cellColumnIdx >= columnIdx - 1 &&
-        cellColumnIdx <= columnIdx + 1;
-
-      if (isSurroundingCell) cell.incrementSurroundingMinesCount();
+      cell.incrementSurroundingMinesCount();
     });
   }
 
@@ -93,13 +88,14 @@ class Board {
       cell.render();
     });
 
-    setTimeout(() => {
+    const hideCells = () =>
       hintedCells.forEach(cell => {
         if (!cell.isHint) return;
         cell.setState({ isShown: false, isHint: false });
         cell.render();
       });
-    }, 2500);
+
+    setTimeout(() => hideCells(), this.hintDuration);
   }
 
   loopThroughCells(callback) {
@@ -113,12 +109,12 @@ class Board {
   }
 
   clone() {
-    const newBoard = new Board(this.boardSqrt);
+    const newBoard = new Board(this.sqrt, this.hintDuration);
     newBoard.board = this.board.map(row => row.map(cell => cell.clone()));
     return newBoard;
   }
 
-  renderBoard() {
+  render(boardTable) {
     const rows = this.board
       .map(row => {
         const cells = row

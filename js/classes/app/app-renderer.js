@@ -7,6 +7,7 @@ import {
   bestScoreContainer,
   flagCounterElement,
   btnSetMinesManually,
+  boardTable
 } from '../../dom-elements.js';
 import {
   HEART_IMG,
@@ -25,7 +26,7 @@ class AppRenderer {
   app({ isUndoAction = false } = {}) {
     this.safeClickCount();
     this.hints();
-    this.appState.board.renderBoard();
+    this.appState.board.render(boardTable);
     this.lives();
     this.flagCounter();
     if (isUndoAction) return;
