@@ -1,6 +1,6 @@
 import Board from '../board/board.js';
 
-const GameConfig = {
+export const gameConfig = {
   easy: {
     difficultyName: 'easy',
     lives: 1,
@@ -33,7 +33,7 @@ const GameConfig = {
 class AppState {
   constructor(difficulty = 'medium') {
     this.hintDuration = 2500;
-    Object.assign(this, GameConfig[difficulty]);
+    Object.assign(this, gameConfig[difficulty]);
     this.board = new Board(this.boardSqrt, this.hintDuration);
     this.intervalTimerId;
     this.gameTime = 0;

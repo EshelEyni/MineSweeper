@@ -1,16 +1,14 @@
 class AppHistory {
-  constructor() {
-    this.prevState = null;
-    this.history = [];
-  }
+  prevState = null;
+  history = [];
 
   addState(state) {
     this.history.push(this.prevState);
     this.prevState = this.#setCopyOfState(state);
   }
 
-  getState() {
-    if (this.history.length === 1) return null;
+  getLastState() {
+    if (!this.history.length) return null;
     return this.history.pop();
   }
 

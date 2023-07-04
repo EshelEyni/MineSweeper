@@ -1,11 +1,10 @@
 import Board from './board';
 import Cell from '../cell/cell';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { jsdom } from '../../test-dom';
 
 describe('Board', () => {
-  let board;
-  let boardTable;
+  let board, boardTable;
 
   beforeAll(() => {
     global.window = jsdom.window;
@@ -79,8 +78,6 @@ describe('Board', () => {
   });
 
   describe('revealSurroundingTargetCells', () => {
-    const cellRender = Cell.prototype.render;
-
     function setupBoard(board, cellStates) {
       cellStates.forEach(([rowIdx, columnIdx, state]) => {
         board.board[rowIdx][columnIdx].setState(state);
@@ -89,10 +86,6 @@ describe('Board', () => {
 
     beforeAll(() => {
       Cell.prototype.render = () => vi.fn();
-    });
-
-    afterAll(() => {
-      Cell.prototype.render = cellRender;
     });
 
     beforeEach(() => {
@@ -258,14 +251,8 @@ describe('Board', () => {
   });
 
   describe('handleHintCellClick', () => {
-    const cellRender = Cell.prototype.render;
-
     beforeAll(() => {
       Cell.prototype.render = () => vi.fn();
-    });
-
-    afterAll(() => {
-      Cell.prototype.render = cellRender;
     });
 
     it('should reveal all surrounding cells', () => {

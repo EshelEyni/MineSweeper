@@ -91,7 +91,7 @@ class App {
   }
 
   handleBtnUndoActionClick() {
-    const prevState = this.history.getState();
+    const prevState = this.history.getLastState();
     if (!prevState) return;
     this.state.setPrevState(prevState);
     this.renderer.app({ isUndoAction: true });
