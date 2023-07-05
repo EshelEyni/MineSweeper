@@ -1,7 +1,8 @@
 import Board from '../board/board';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import AppState from './app-state';
 import { gameConfig } from './app-state';
+import AppStorage from './app-storage';
 
 describe('AppState', () => {
   let appState;
@@ -24,6 +25,7 @@ describe('AppState', () => {
         ...defaultPartialState,
         ...gameConfig.medium,
         board: new Board(gameConfig.medium.boardSqrt, hintDuration),
+        storage: new AppStorage(),
       };
       expect(appState).toBeInstanceOf(AppState);
       expect(appState).toEqual(stateToCompare);
@@ -35,6 +37,7 @@ describe('AppState', () => {
         ...defaultPartialState,
         ...gameConfig.hard,
         board: new Board(gameConfig.hard.boardSqrt, hintDuration),
+        storage: new AppStorage(),
       };
 
       expect(appState).toBeInstanceOf(AppState);
@@ -243,7 +246,44 @@ describe('AppState', () => {
       appState.onGameLoss();
       expect(appState.intervalTimerId).toBeUndefined();
       expect(appState.isTimerRunning).toBe(false);
-      //   expect(appState.board.loopThroughCells).toHaveBeenCalled();
+      expect(appState.board.loopThroughCells).toHaveBeenCalled();
+    });
+  });
+
+  describe('verifyWin', () => {
+    const flaggedMine = { isMine: true, isFlagged: true, isShown: false };
+    const shownedEmptyCell = { isMine: false, isFlagged: false, isShown: true };
+    const hiddenCell = { isMine: false, isFlagged: false, isShown: false };
+    beforeEach(() => {
+      appState = new AppState();
+      appState.boardSqrt = 2;
+      appState.startGame();
+    });
+
+    afterEach(() => {
+      appState.intervalTimerId = undefined;
+    });
+
+    it('should declare a win if all cells that mines are flagged and all other cells are showned', () => {
+      appState.board.board = [
+        [flaggedMine, shownedEmptyCell],
+        [flaggedMine, shownedEmptyCell],
+      ];
+      appState.storage.setBestScore = vi.fn();
+      const result = appState.verifyWin();
+      expect(result).toBe(true);
+      expect(appState.isTimerRunning).toBe(false);
+      expect(appState.storage.setBestScore).toHaveBeenCalled();
+    });
+
+    it('should not declare a win if all cells that mines are flagged but not all other cells are showned', () => {
+      appState.board.board = [
+        [flaggedMine, shownedEmptyCell],
+        [flaggedMine, hiddenCell],
+      ];
+      const result = appState.verifyWin();
+      expect(result).toBe(false);
+      expect(appState.isTimerRunning).toBe(true);
     });
   });
 });

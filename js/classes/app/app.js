@@ -2,6 +2,7 @@ import { getRandomInt } from '../../utils/utils.js';
 import AppState from './app-state';
 import AppHistory from './app-history';
 import AppRenderer from './app-renderer';
+import { safeClickCountElement } from '../../dom-elements';
 
 class App {
   constructor() {
@@ -29,7 +30,6 @@ class App {
     if (!isTimerRunning) this.#onGameStart();
 
     if (isClickHint) {
-      console.log('hint');
       this.#onClickHint(rowIdx, columnIdx);
       return;
     }
@@ -44,7 +44,7 @@ class App {
 
     this.state.board.revealSurroundingTargetCells(rowIdx, columnIdx);
     this.history.addState(this.state);
-    const isVicotry = this.state.verifyGameVictory();
+    const isVicotry = this.state.verifyWin();
     if (isVicotry) this.renderer.smileyWin();
   }
 
@@ -73,7 +73,7 @@ class App {
     if (!this.state.safeClickCount) return;
     if (!this.isMinesSet) this.state.board.setRandomMines(this.state.minesCount);
     this.state.decrementSafeClickCount();
-    this.renderer.safeClickCount();
+    this.renderer.safeClickCount(safeClickCountElement);
 
     const safeCells = [];
 

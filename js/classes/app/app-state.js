@@ -1,4 +1,5 @@
 import Board from '../board/board.js';
+import AppStorage from './app-storage';
 
 export const gameConfig = {
   easy: {
@@ -41,6 +42,7 @@ class AppState {
     this.isClickHint = false;
     this.isManualMineSetting = false;
     this.isMinesSet = false;
+    this.storage = new AppStorage();
   }
 
   incrementTimer() {
@@ -115,7 +117,7 @@ class AppState {
     });
   }
 
-  verifyGameVictory() {
+  verifyWin() {
     const { boardSqrt } = this;
     let victoryCount = Math.pow(boardSqrt, 2);
     this.board.loopThroughCells(cell => {
@@ -129,16 +131,7 @@ class AppState {
 
   #onGameWin() {
     this.#resetTimer();
-    this.#setBestScore();
-  }
-
-  #setBestScore() {
-    const { difficultyName } = this;
-    const storageValue = window.localStorage.getItem(difficultyName);
-    const prevBestScore = storageValue ? Number(storageValue) : null;
-    const isBestScore = prevBestScore === null || prevBestScore > this.gameTime;
-    if (!isBestScore) return;
-    window.localStorage.setItem(difficultyName, this.gameTime);
+    this.storage.setBestScore(this.difficultyName, this.gameTime);
   }
 
   #resetTimer() {

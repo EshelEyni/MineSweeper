@@ -84,13 +84,13 @@ describe('AppHistory', () => {
   });
 
   describe('getLastState', () => {
-    let appHistory, board, state1, state2;
+    let appHistory, board, state_1, state_2, state_3, state_4;
 
     beforeEach(() => {
       appHistory = new AppHistory();
       board = new Board(8);
 
-      state1 = {
+      state_1 = {
         lives: 3,
         minesCount: 5,
         flagCount: 2,
@@ -98,12 +98,28 @@ describe('AppHistory', () => {
         hintsCount: 3,
         board,
       };
-      state2 = {
+      state_2 = {
         lives: 2,
         minesCount: 4,
         flagCount: 1,
         safeClickCount: 1,
         hintsCount: 2,
+        board,
+      };
+      state_3 = {
+        lives: 1,
+        minesCount: 3,
+        flagCount: 0,
+        safeClickCount: 0,
+        hintsCount: 1,
+        board,
+      };
+      state_4 = {
+        lives: 1,
+        minesCount: 2,
+        flagCount: 0,
+        safeClickCount: 0,
+        hintsCount: 0,
         board,
       };
     });
@@ -114,16 +130,46 @@ describe('AppHistory', () => {
     });
 
     it('should return the last state added to history', () => {
-      appHistory.addState(state1);
-      appHistory.addState(state2);
-      expect(appHistory.getLastState()).toEqual(state1);
+      appHistory.addState(state_1);
+      appHistory.addState(state_2);
+      expect(appHistory.prevState).toEqual(state_2);
+      expect(appHistory.getLastState()).toEqual(state_1);
     });
 
     it('should remove the returned state from history', () => {
-      appHistory.addState(state1);
-      appHistory.addState(state2);
+      appHistory.addState(state_1);
+      appHistory.addState(state_2);
       appHistory.getLastState();
-      expect(appHistory.history).toEqual([]);
+      const returnedState = appHistory.history;
+      const expectedState = [null];
+      expect(appHistory.prevState).toEqual(state_2);
+      expect(returnedState).toEqual(expectedState);
+    });
+
+    it('should return the last state added to history when called multiple times', () => {
+      appHistory.addState(state_1);
+      appHistory.addState(state_2);
+      appHistory.addState(state_3);
+      appHistory.addState(state_4);
+      expect(appHistory.prevState).toEqual(state_4);
+      expect(appHistory.getLastState()).toEqual(state_3);
+      expect(appHistory.getLastState()).toEqual(state_2);
+      expect(appHistory.getLastState()).toEqual(state_1);
+    });
+
+    it('Should consistently return the latest state from getLastState, even when new states are added after its previous invocation', () => {
+      appHistory.addState(state_1);
+      appHistory.addState(state_2);
+      const firstReturnedState = appHistory.getLastState();
+      expect(firstReturnedState).toEqual(state_1);
+      appHistory.addState(state_3);
+      const secondReturnedState = appHistory.getLastState();
+      expect(appHistory.prevState).toEqual(state_3);
+      expect(secondReturnedState).toEqual(state_2);
+      appHistory.addState(state_4);
+      const thirdReturnedState = appHistory.getLastState();
+      expect(appHistory.prevState).toEqual(state_4);
+      expect(thirdReturnedState).toEqual(state_3);
     });
   });
 });

@@ -7,7 +7,7 @@ import {
   bestScoreContainer,
   flagCounterElement,
   btnSetMinesManually,
-  boardTable
+  boardTable,
 } from '../../dom-elements.js';
 import {
   HEART_IMG,
@@ -19,47 +19,50 @@ import {
 } from '../../image-assets.js';
 
 class AppRenderer {
+
   constructor(appState) {
     this.appState = appState;
   }
 
   app({ isUndoAction = false } = {}) {
-    this.safeClickCount();
-    this.hints();
+    this.safeClickCount(safeClickCountElement);
+    this.hints(hintsContainerElement);
     this.appState.board.render(boardTable);
     this.lives();
     this.flagCounter();
     if (isUndoAction) return;
     this.timer();
-    this.bestScore();
+    this.bestScore(bestScoreContainer);
   }
 
-  safeClickCount() {
+  safeClickCount(safeClickCountElement) {
     const { safeClickCount } = this.appState;
     if (safeClickCount >= 0) {
       safeClickCountElement.innerHTML = `${safeClickCount}`;
     }
   }
 
-  hints() {
+  hints(hintsContainerElement) {
     const { hintsCount } = this.appState;
+    if (hintsCount <= 0) return;
     let hints = '';
-    for (let i = 0; i < hintsCount; i++) {
+    for (let i = 0; i < hintsCount; i++)
       hints += `<button class="hint inset-border" data-idx="${i}">${SMILEY_MONOCLE_IMG}</button>`;
-    }
+
     hintsContainerElement.innerHTML = hints;
   }
 
-  bestScore() {
+  bestScore(bestScoreContainer) {
     const { difficultyName } = this.appState;
-    const previousBestScore = window.localStorage.getItem(difficultyName);
+    const previousBestScore = this.appState.storage.getBestScore(difficultyName);
     if (previousBestScore === null) {
       bestScoreContainer.innerHTML = `<span>BEST SCORE: 00:00</span>`;
       return;
     }
     const minutes = Math.floor(previousBestScore / 60);
     const seconds = previousBestScore % 60;
-    bestScoreContainer.innerHTML = `<span>BEST SCORE: ${minutes}:${seconds}</span>`;
+    const formattedSeconds = seconds.toString().padStart(2, '0');
+    bestScoreContainer.innerHTML = `<span>BEST SCORE: ${minutes}:${formattedSeconds}</span>`;
   }
 
   lives() {
