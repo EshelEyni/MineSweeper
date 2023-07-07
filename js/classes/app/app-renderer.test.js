@@ -1,8 +1,14 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import AppRenderer from './app-renderer';
-import AppState from './app-state';
 import { jsdom } from '../../test-dom';
-import { SMILEY_MONOCLE_IMG } from '../../image-assets';
+import {
+  HEART_IMG,
+  SMILEY_IMG,
+  SMILEY_LOSE_IMG,
+  SMILEY_MONOCLE_IMG,
+  SMILEY_SHOCKED_IMG,
+  SMILEY_WIN_IMG,
+} from '../../image-assets';
 
 describe('AppRenderer', () => {
   let appRenderer;
@@ -162,6 +168,147 @@ describe('AppRenderer', () => {
 
       appRenderer.bestScore(bestScoreElement);
       expect(bestScoreElement.innerHTML).toEqual(expectedInnerHTML);
+    });
+  });
+
+  describe('lives', () => {
+    let mockAppState;
+
+    it('should render default lives when lives is 0', () => {
+      const livesContainerElement = document.querySelector('.lives-container');
+      mockAppState = { lives: 0 };
+      appRenderer = new AppRenderer(mockAppState);
+      const expectedInnerHTML = '';
+      appRenderer.lives(livesContainerElement);
+      expect(livesContainerElement.innerHTML).toEqual(expectedInnerHTML);
+    });
+
+    it('should render lives when lives is greater than 0', () => {
+      const livesContainerElement = document.querySelector('.lives-container');
+      mockAppState = { lives: 3 };
+      appRenderer = new AppRenderer(mockAppState);
+      const div = document.createElement('div');
+      div.innerHTML = HEART_IMG.repeat(mockAppState.lives);
+      const expectedInnerHTML = div.innerHTML;
+      appRenderer.lives(livesContainerElement);
+      expect(livesContainerElement.innerHTML).toEqual(expectedInnerHTML);
+
+      mockAppState = { lives: 2 };
+      appRenderer = new AppRenderer(mockAppState);
+      div.innerHTML = HEART_IMG.repeat(mockAppState.lives);
+      const expectedInnerHTML_2 = div.innerHTML;
+      appRenderer.lives(livesContainerElement);
+      expect(livesContainerElement.innerHTML).toEqual(expectedInnerHTML_2);
+    });
+  });
+
+  describe('Smiley Rendering', () => {
+    beforeEach(() => {
+      appRenderer = new AppRenderer();
+    });
+
+    it('should render default smiley when is smileyDefault() is called', () => {
+      const smileyContainerElement = document.querySelector('.smiley-container');
+      const div = document.createElement('div');
+      div.innerHTML = SMILEY_IMG;
+      const normalizedSMILEY_IMG = div.innerHTML;
+      const expectedInnerHTML = normalizedSMILEY_IMG;
+      appRenderer.smileyDefault(smileyContainerElement);
+      expect(smileyContainerElement.innerHTML).toEqual(expectedInnerHTML);
+    });
+
+    it('should render default smiley when is smileyLoss() is called', () => {
+      const smileyContainerElement = document.querySelector('.smiley-container');
+      const div = document.createElement('div');
+      div.innerHTML = SMILEY_LOSE_IMG;
+      const normalizedSMILEY_LOSE_IMG = div.innerHTML;
+      const expectedInnerHTML = normalizedSMILEY_LOSE_IMG;
+      appRenderer.smileyLoss(smileyContainerElement);
+      expect(smileyContainerElement.innerHTML).toEqual(expectedInnerHTML);
+    });
+
+    it('should render default smiley when is smileyWin() is called', () => {
+      const smileyContainerElement = document.querySelector('.smiley-container');
+      const div = document.createElement('div');
+      div.innerHTML = SMILEY_WIN_IMG;
+      const normalizedSMILEY_WIN_IMG = div.innerHTML;
+      const expectedInnerHTML = normalizedSMILEY_WIN_IMG;
+      appRenderer.smileyWin(smileyContainerElement);
+      expect(smileyContainerElement.innerHTML).toEqual(expectedInnerHTML);
+    });
+
+    it('should render default smiley when is smileyShocked() is called', () => {
+      const smileyContainerElement = document.querySelector('.smiley-container');
+      const div = document.createElement('div');
+      div.innerHTML = SMILEY_SHOCKED_IMG;
+      const normalizedSMILEY_SHOCKED_IMG = div.innerHTML;
+      const expectedInnerHTML = normalizedSMILEY_SHOCKED_IMG;
+      appRenderer.smileyShocked(smileyContainerElement);
+      expect(smileyContainerElement.innerHTML).toEqual(expectedInnerHTML);
+    });
+  });
+
+  describe('toggleBtnActiveSetMinesManually', () => {
+    const expectedClassName = 'active';
+
+    it('should toggle btn active class when isSetMinesManually() is called', () => {
+      appRenderer = new AppRenderer();
+      const btnSetMinesManually = document.querySelector('.btn-set-mines-manually');
+      appRenderer.toggleBtnActiveSetMinesManually(btnSetMinesManually);
+      const classListArray_1 = Array.from(btnSetMinesManually.classList);
+      expect(classListArray_1).toContain(expectedClassName);
+      appRenderer.toggleBtnActiveSetMinesManually(btnSetMinesManually);
+      const classListArray_2 = Array.from(btnSetMinesManually.classList);
+      expect(classListArray_2).not.toContain(expectedClassName);
+    });
+  });
+
+  describe('flagCounter', () => {
+    it('should render flag counter when is flagCount is greater than or equal to 0', () => {
+      const formmatedFlagCount = flagCount => flagCount.toString().padStart(3, '0');
+      const flagCounterElement = document.querySelector('.flag-counter');
+      const mockAppState = { flagCount: 10 };
+      appRenderer = new AppRenderer(mockAppState);
+      appRenderer.flagCounter(flagCounterElement);
+      expect(flagCounterElement.innerHTML).toEqual(formmatedFlagCount(mockAppState.flagCount));
+
+      const mockAppState_2 = { flagCount: 0 };
+      appRenderer = new AppRenderer(mockAppState_2);
+      appRenderer.flagCounter(flagCounterElement);
+      expect(flagCounterElement.innerHTML).toEqual(formmatedFlagCount(mockAppState_2.flagCount));
+    });
+
+    it('should render flag counter when is flagCount is smaller than 0', () => {
+      const formmatedFlagCount = flagCount => flagCount.toString().padStart(0, '0');
+      const flagCounterElement = document.querySelector('.flag-counter');
+      const mockAppState = { flagCount: -1 };
+      appRenderer = new AppRenderer(mockAppState);
+      appRenderer.flagCounter(flagCounterElement);
+      expect(flagCounterElement.innerHTML).toEqual(formmatedFlagCount(mockAppState.flagCount));
+    });
+  });
+
+  describe('timer', () => {
+    beforeEach(() => {
+      appRenderer = new AppRenderer();
+    });
+
+    it('should render correct default time', () => {
+      const timerElement = document.querySelector('.timer');
+      const expectedInnerHTML = '000';
+      appRenderer.timer(timerElement);
+      expect(timerElement.innerHTML).toBe(expectedInnerHTML);
+    });
+
+    it('should render correct time when time is greater than 0', () => {
+      const timerElement = document.querySelector('.timer');
+      const time = {
+        minutes: 1,
+        seconds: 9,
+      };
+      const expectedInnerHTML = '1:09';
+      appRenderer.timer(timerElement, time);
+      expect(timerElement.innerHTML).toBe(expectedInnerHTML);
     });
   });
 });

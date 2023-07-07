@@ -1,15 +1,4 @@
 import {
-  timerElement,
-  safeClickCountElement,
-  smileyContainerElement,
-  livesContainerElement,
-  hintsContainerElement,
-  bestScoreContainer,
-  flagCounterElement,
-  btnSetMinesManually,
-  boardTable,
-} from '../../dom-elements.js';
-import {
   HEART_IMG,
   SMILEY_IMG,
   SMILEY_WIN_IMG,
@@ -19,19 +8,27 @@ import {
 } from '../../image-assets.js';
 
 class AppRenderer {
-
   constructor(appState) {
     this.appState = appState;
   }
 
-  app({ isUndoAction = false } = {}) {
+  app({
+    isUndoAction = false,
+    safeClickCountElement,
+    hintsContainerElement,
+    boardTable,
+    bestScoreContainer,
+    livesContainerElement,
+    flagCounterElement,
+    timerElement
+  } = {}) {
     this.safeClickCount(safeClickCountElement);
     this.hints(hintsContainerElement);
     this.appState.board.render(boardTable);
-    this.lives();
-    this.flagCounter();
+    this.lives(livesContainerElement);
+    this.flagCounter(flagCounterElement);
     if (isUndoAction) return;
-    this.timer();
+    this.timer(timerElement);
     this.bestScore(bestScoreContainer);
   }
 
@@ -65,7 +62,7 @@ class AppRenderer {
     bestScoreContainer.innerHTML = `<span>BEST SCORE: ${minutes}:${formattedSeconds}</span>`;
   }
 
-  lives() {
+  lives(livesContainerElement) {
     if (!this.isTimerRunning) {
       let lives = '';
       for (let i = 0; i < this.appState.lives; i++) lives += `${HEART_IMG}`;
@@ -79,34 +76,34 @@ class AppRenderer {
     });
   }
 
-  smileyLoss() {
-    smileyContainerElement.innerHTML = SMILEY_LOSE_IMG;
-  }
-
-  smileyWin() {
-    smileyContainerElement.innerHTML = SMILEY_WIN_IMG;
-  }
-
-  smileyShocked() {
-    smileyContainerElement.innerHTML = SMILEY_SHOCKED_IMG;
-  }
-
-  smileyDefault() {
+  smileyDefault(smileyContainerElement) {
     smileyContainerElement.innerHTML = SMILEY_IMG;
   }
 
-  toggleBtnActiveSetMinesManually() {
+  smileyLoss(smileyContainerElement) {
+    smileyContainerElement.innerHTML = SMILEY_LOSE_IMG;
+  }
+
+  smileyWin(smileyContainerElement) {
+    smileyContainerElement.innerHTML = SMILEY_WIN_IMG;
+  }
+
+  smileyShocked(smileyContainerElement) {
+    smileyContainerElement.innerHTML = SMILEY_SHOCKED_IMG;
+  }
+
+  toggleBtnActiveSetMinesManually(btnSetMinesManually) {
     btnSetMinesManually.classList.toggle('active');
   }
 
-  flagCounter() {
+  flagCounter(flagCounterElement) {
     const { flagCount } = this.appState;
     const paddingNum = flagCount >= 0 ? 3 : 0;
     const formmatedFlagCount = flagCount.toString().padStart(paddingNum, '0');
     flagCounterElement.innerHTML = `${formmatedFlagCount}`;
   }
 
-  timer(time) {
+  timer(timerElement, time) {
     if (!time) {
       timerElement.innerHTML = '000';
       return;

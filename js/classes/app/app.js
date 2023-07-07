@@ -2,11 +2,29 @@ import { getRandomInt } from '../../utils/utils.js';
 import AppState from './app-state';
 import AppHistory from './app-history';
 import AppRenderer from './app-renderer';
-import { safeClickCountElement } from '../../dom-elements';
+import {
+  livesContainerElement,
+  safeClickCountElement,
+  hintsContainerElement,
+  boardTable,
+  bestScoreContainer,
+  smileyContainerElement,
+  btnSetMinesManually,
+  flagCounterElement,
+  timerElement,
+} from '../../dom-elements';
 
 class App {
   constructor() {
-    this.renderer.app();
+    this.renderer.app({
+      safeClickCountElement,
+      hintsContainerElement,
+      boardTable,
+      bestScoreContainer,
+      livesContainerElement,
+      flagCounterElement,
+      timerElement,
+    });
   }
 
   handleSmileyClick() {
@@ -45,7 +63,7 @@ class App {
     this.state.board.revealSurroundingTargetCells(rowIdx, columnIdx);
     this.history.addState(this.state);
     const isVicotry = this.state.verifyWin();
-    if (isVicotry) this.renderer.smileyWin();
+    if (isVicotry) this.renderer.smileyWin(smileyContainerElement);
   }
 
   handleBoardContainerRightClick(event) {
@@ -94,18 +112,27 @@ class App {
     const prevState = this.history.getLastState();
     if (!prevState) return;
     this.state.setPrevState(prevState);
-    this.renderer.app({ isUndoAction: true });
+    this.renderer.app({
+      isUndoAction: true,
+      safeClickCountElement,
+      hintsContainerElement,
+      boardTable,
+      bestScoreContainer,
+      livesContainerElement,
+      flagCounterElement,
+      timerElement,
+    });
   }
 
   handleSetDifficultyBtnClick(event) {
     const { difficultyName } = event.target.dataset;
     this.#onResetGame(difficultyName);
-    this.renderer.smileyDefault();
+    this.renderer.smileyDefault(smileyContainerElement);
   }
 
   handleBtnSetMinesManuallyClick() {
     if (this.state.isMinesSet) return;
-    this.renderer.toggleBtnActiveSetMinesManually();
+    this.renderer.toggleBtnActiveSetMinesManually(btnSetMinesManually);
     this.state.toggleIsManualMineSetting();
   }
 
@@ -113,7 +140,15 @@ class App {
     clearInterval(this.intervalTimerId);
     this.state.toggleIsTimerRunning();
     this.state.board.setBoard();
-    this.renderer.app();
+    this.renderer.app({
+      safeClickCountElement,
+      hintsContainerElement,
+      boardTable,
+      bestScoreContainer,
+      livesContainerElement,
+      flagCounterElement,
+      timerElement,
+    });
 
     let index = 1;
     this.state.board.loopThroughCells(cell => {
@@ -131,7 +166,15 @@ class App {
     this.state = new AppState(difficultyName);
     this.history = new AppHistory(this.state);
     this.renderer = new AppRenderer(this.state);
-    this.renderer.app();
+    this.renderer.app({
+      safeClickCountElement,
+      hintsContainerElement,
+      boardTable,
+      bestScoreContainer,
+      livesContainerElement,
+      flagCounterElement,
+      timerElement,
+    });
   }
 
   #onManualMineSetting(clickedCell) {
@@ -142,7 +185,7 @@ class App {
     if (!this.state.minesCount) {
       this.state.toggleIsManualMineSetting();
       this.state.toggleIsMinesSet();
-      this.renderer.toggleBtnActiveSetMinesManually();
+      this.renderer.toggleBtnActiveSetMinesManually(btnSetMinesManually);
     }
     const { rowIdx, columnIdx } = clickedCell.coords;
     this.state.board.setSurroundingMineCount(rowIdx, columnIdx);
@@ -151,10 +194,10 @@ class App {
 
   #onGameStart() {
     this.state.startGame();
-    this.renderer.timer({ minutes: 0, seconds: 0 });
+    this.renderer.timer(timerElement, { minutes: 0, seconds: 0 });
     this.state.intervalTimerId = setInterval(() => {
       const time = this.state.setTimer();
-      this.renderer.timer(time);
+      this.renderer.timer(timerElement, time);
     }, 1000);
   }
 
@@ -167,10 +210,10 @@ class App {
 
   #onMineClick() {
     this.state.decrementLives();
-    this.renderer.lives();
+    this.renderer.lives(livesContainerElement);
     if (!this.state.lives) {
       this.state.onGameLoss();
-      this.renderer.smileyLoss();
+      this.renderer.smileyLoss(smileyContainerElement);
     }
     this.history.addState(this.state);
   }
@@ -178,7 +221,7 @@ class App {
   #setFlagCounter(isFlagged) {
     if (isFlagged) this.state.decrementFlagCount();
     else this.state.incrementFlagCount();
-    this.renderer.flagCounter();
+    this.renderer.flagCounter(flagCounterElement);
   }
 
   // Fields
