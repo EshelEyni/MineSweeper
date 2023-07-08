@@ -35,8 +35,24 @@ class App {
     });
   }
 
-  handleSmileyClick() {
-    this.#onResetGame(this.state.difficultyName);
+  handleSmileyClick({
+    safeClickCountElement,
+    hintsContainerElement,
+    boardTable,
+    bestScoreContainer,
+    livesContainerElement,
+    flagCounterElement,
+    timerElement,
+  }) {
+    this.#onResetGame(this.state.difficultyName, {
+      safeClickCountElement,
+      hintsContainerElement,
+      boardTable,
+      bestScoreContainer,
+      livesContainerElement,
+      flagCounterElement,
+      timerElement,
+    });
   }
 
   handleBoardClick(event) {
@@ -127,19 +143,47 @@ class App {
     });
   }
 
-  handleSetDifficultyBtnClick(event, smileyContainerElement) {
+  handleSetDifficultyBtnClick(
+    event,
+    {
+      smileyContainerElement,
+      safeClickCountElement,
+      hintsContainerElement,
+      boardTable,
+      bestScoreContainer,
+      livesContainerElement,
+      flagCounterElement,
+      timerElement,
+    }
+  ) {
     const { difficultyName } = event.target.dataset;
-    this.#onResetGame(difficultyName);
+    this.#onResetGame(difficultyName, {
+      safeClickCountElement,
+      hintsContainerElement,
+      boardTable,
+      bestScoreContainer,
+      livesContainerElement,
+      flagCounterElement,
+      timerElement,
+    });
     this.renderer.smileyDefault(smileyContainerElement);
   }
 
   handleBtnSetMinesManuallyClick(btnSetMinesManually) {
-    if (this.state.isMinesSet || !this.state.isManualMineSetting) return;
+    if (this.state.isMinesSet || this.state.isManualMineSetting) return;
     this.renderer.toggleBtnActiveSetMinesManually(btnSetMinesManually);
     this.state.toggleIsManualMineSetting();
   }
 
-  handleBtnSetSevenBoomClick() {
+  handleBtnSetSevenBoomClick({
+    safeClickCountElement,
+    hintsContainerElement,
+    boardTable,
+    bestScoreContainer,
+    livesContainerElement,
+    flagCounterElement,
+    timerElement,
+  }) {
     clearInterval(this.intervalTimerId);
     this.state.toggleIsTimerRunning();
     this.state.board.setBoard();
@@ -164,7 +208,18 @@ class App {
     });
   }
 
-  #onResetGame(difficultyName) {
+  #onResetGame(
+    difficultyName,
+    {
+      safeClickCountElement,
+      hintsContainerElement,
+      boardTable,
+      bestScoreContainer,
+      livesContainerElement,
+      flagCounterElement,
+      timerElement,
+    }
+  ) {
     clearInterval(this.state.intervalTimerId);
     this.state = new AppState(difficultyName);
     this.history = new AppHistory(this.state);

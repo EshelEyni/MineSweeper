@@ -41,6 +41,8 @@ describe('App', () => {
     btnDifficultyContainer,
     btnClickSafe;
 
+  let loopThroughCellsOriginalMethod = Board.prototype.loopThroughCells;
+
   beforeEach(() => {
     global.window = jsdom.window;
     global.document = jsdom.window.document;
@@ -61,6 +63,7 @@ describe('App', () => {
       'setTimer',
       'decrementSafeClickCount',
       'setPrevState',
+      'toggleIsTimerRunning',
     ]);
 
     setMockMethodsOnPrototype(AppRenderer.prototype, [
@@ -154,7 +157,15 @@ describe('App', () => {
       const defaultRenderer = new AppRenderer(defaultState);
       app.state.difficultyName = prevDifficultyName;
       app.state.intervalTimerId = 1;
-      app.handleSmileyClick();
+      app.handleSmileyClick(
+        safeClickCountElement,
+        hintsContainerElement,
+        boardTable,
+        bestScoreContainer,
+        livesContainerElement,
+        flagCounterElement,
+        timerElement
+      );
 
       expect(app.state.intervalTimerId).toBeUndefined();
       expect(app.state).toEqual(defaultState);
@@ -625,12 +636,32 @@ describe('App', () => {
     });
 
     it('should trigger #onResetGame when Difficulty Button clicked', () => {
-      app.handleSetDifficultyBtnClick(event, smileyContainerElement);
+      app.handleSetDifficultyBtnClick(event, {
+        smileyContainerElement,
+        safeClickCountElement,
+        hintsContainerElement,
+        boardTable,
+        bestScoreContainer,
+        livesContainerElement,
+        flagCounterElement,
+        timerElement,
+        smileyContainerElement,
+      });
       expect(app.state.intervalTimerId).toBeUndefined();
       expect(app.state.difficultyName).toBe('easy');
 
       btnElement.dataset.difficultyName = 'hard';
-      app.handleSetDifficultyBtnClick(event, smileyContainerElement);
+      app.handleSetDifficultyBtnClick(event, {
+        smileyContainerElement,
+        safeClickCountElement,
+        hintsContainerElement,
+        boardTable,
+        bestScoreContainer,
+        livesContainerElement,
+        flagCounterElement,
+        timerElement,
+        smileyContainerElement,
+      });
       expect(app.state.intervalTimerId).toBeUndefined();
       expect(app.state.difficultyName).toBe('hard');
     });
@@ -653,8 +684,89 @@ describe('App', () => {
 
     it('should trigger methods when button clicked', () => {
       app.handleBtnSetMinesManuallyClick();
-      // expectMethodsToBeCalled(methods);
-      expect(app.renderer.toggleBtnActiveSetMinesManually).toHaveBeenCalled();
+      expectMethodsToBeCalled(methods);
+    });
+
+    it('should not trigger methods when button clicked if state.isMineSet is true', () => {
+      app.state.isMinesSet = true;
+      app.handleBtnSetMinesManuallyClick();
+      expectMethodsNotToBeCalled(methods);
+    });
+
+    it('should not trigger methods when button clicked if state.isManualMineSetting is true', () => {
+      app.state.isManualMineSetting = true;
+      app.handleBtnSetMinesManuallyClick();
+      expectMethodsNotToBeCalled(methods);
+    });
+  });
+
+  describe('handleBtnSetSevenBoomClick', () => {
+    let methodsExpectToBeCalledOnce;
+    beforeEach(() => {
+      app = new App({
+        safeClickCountElement,
+        hintsContainerElement,
+        boardTable,
+        bestScoreContainer,
+        livesContainerElement,
+        flagCounterElement,
+        timerElement,
+      });
+      methodsExpectToBeCalledOnce = [
+        app.state.toggleIsTimerRunning,
+        app.state.board.loopThroughCells,
+      ];
+    });
+
+    it('should trigger methods when button clicked', () => {
+      app.handleBtnSetSevenBoomClick({
+        safeClickCountElement,
+        hintsContainerElement,
+        boardTable,
+        bestScoreContainer,
+        livesContainerElement,
+        flagCounterElement,
+        timerElement,
+      });
+      expectMethodsToBeCalled(methodsExpectToBeCalledOnce);
+      expect(app.renderer.app).toHaveBeenCalledTimes(2);
+    });
+
+    it('should set mine at every cell that is a multiple of 7 or that every cell that is number contain the digit 7', () => {
+      app.handleBtnSetSevenBoomClick({
+        safeClickCountElement,
+        hintsContainerElement,
+        boardTable,
+        bestScoreContainer,
+        livesContainerElement,
+        flagCounterElement,
+        timerElement,
+      });
+
+      Board.prototype.loopThroughCells = loopThroughCellsOriginalMethod;
+      const { board } = app.state;
+      let index = 1;
+      const digitSevenExists = () => {
+        const separatedDigits = index.toString().split('');
+        return separatedDigits.some(digit => digit === '7');
+      };
+
+      board.board.forEach(row =>
+        row.forEach(cell => {
+          if (index % 7 === 0 || digitSevenExists()) cell.isMine = true;
+          index++;
+        })
+      );
+
+      index = 1;
+
+      board.board.forEach(row =>
+        row.forEach(cell => {
+          if (index % 7 === 0 || digitSevenExists()) expect(cell.isMine).toBe(true);
+          else expect(cell.isMine).toBe(false);
+          index++;
+        })
+      );
     });
   });
 });
