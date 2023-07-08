@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
 
-const jsdom = new JSDOM(`
+const jsdom = new JSDOM(
+  `
   <!DOCTYPE html>
   <html>
     <body>
@@ -49,7 +50,11 @@ const jsdom = new JSDOM(`
         </main>
     </body>
   </html>
-`);
+`,
+  {
+    url: 'http://localhost/',
+  }
+);
 
 const { document } = jsdom.window;
 document.documentElement.style.setProperty('--hint-color', 'rgb(233, 214, 111)');

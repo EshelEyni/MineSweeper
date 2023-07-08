@@ -116,6 +116,17 @@ describe('AppRenderer', () => {
     });
   });
 
+  describe('hintBtnClicked', () => {
+    it('should set the correct background color when hintBtnElement is clicked', () => {
+      const hintBtnElement = document.createElement('button');
+      hintBtnElement.classList.add('hint');
+      hintBtnElement.setAttribute('data-idx', 0);
+      const expectedColor = document.documentElement.style.getPropertyValue('--hint-color');
+      appRenderer.hintBtnClicked(hintBtnElement);
+      expect(hintBtnElement.style.backgroundColor).toEqual(expectedColor);
+    });
+  });
+
   describe('bestScore', () => {
     let mockAppState;
 

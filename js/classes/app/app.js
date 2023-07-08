@@ -15,7 +15,15 @@ import {
 } from '../../dom-elements';
 
 class App {
-  constructor() {
+  constructor({
+    safeClickCountElement,
+    hintsContainerElement,
+    boardTable,
+    bestScoreContainer,
+    livesContainerElement,
+    flagCounterElement,
+    timerElement,
+  }) {
     this.renderer.app({
       safeClickCountElement,
       hintsContainerElement,
@@ -34,32 +42,28 @@ class App {
   handleBoardClick(event) {
     const { target } = event;
     if (!target.classList.contains('cell') || !this.state.lives) return;
-    const rowIdx = Number(target.dataset.rowIdx);
-    const columnIdx = Number(target.dataset.columnIdx);
+    const { dataset } = target;
+    if (!dataset.rowIdx || !dataset.columnIdx) return;
+    const rowIdx = Number(dataset.rowIdx);
+    const columnIdx = Number(dataset.columnIdx);
     const clickedCell = this.state.board.board[rowIdx][columnIdx];
     if (clickedCell.isFlagged || clickedCell.isShown) return;
-
     const { isManualMineSetting, isTimerRunning, isClickHint } = this.state;
     if (isManualMineSetting) {
       this.#onManualMineSetting(clickedCell);
       return;
     }
-
     if (!isTimerRunning) this.#onGameStart();
-
     if (isClickHint) {
       this.#onClickHint(rowIdx, columnIdx);
       return;
     }
-
     clickedCell.onCellClick();
     clickedCell.render();
-
     if (clickedCell.isMine) {
       this.#onMineClick(rowIdx, columnIdx);
       return;
     }
-
     this.state.board.revealSurroundingTargetCells(rowIdx, columnIdx);
     this.history.addState(this.state);
     const isVicotry = this.state.verifyWin();
@@ -70,8 +74,10 @@ class App {
     event.preventDefault();
     const { target } = event;
     if (!target.classList.contains('cell') || !this.state.lives) return;
-    const rowIdx = Number(target.dataset.rowIdx);
-    const columnIdx = Number(target.dataset.columnIdx);
+    const { dataset } = target;
+    if (!dataset.rowIdx || !dataset.columnIdx) return;
+    const rowIdx = Number(dataset.rowIdx);
+    const columnIdx = Number(dataset.columnIdx);
     const clickedCell = this.state.board.board[rowIdx][columnIdx];
     const isCellFlagged = clickedCell.onCellRightClick();
     this.#setFlagCounter(isCellFlagged);
@@ -81,31 +87,28 @@ class App {
 
   handleHintContainerClick(event) {
     event.preventDefault();
-    if (event.target.classList.contains('hint')) {
-      event.target.style.backgroundColor = 'var(--hint-color)';
+    const { target } = event;
+    if (target.classList.contains('hint')) {
+      this.renderer.hintBtnClicked(target);
       this.state.toggleIsClickHint();
     }
   }
 
-  handleBtnSafeClick() {
+  handleBtnSafeClick(safeClickCountElement, fadeTime = 2000) {
     if (!this.state.safeClickCount) return;
-    if (!this.isMinesSet) this.state.board.setRandomMines(this.state.minesCount);
+    if (!this.state.isMinesSet) this.state.board.setRandomMines(this.state.minesCount);
     this.state.decrementSafeClickCount();
     this.renderer.safeClickCount(safeClickCountElement);
-
     const safeCells = [];
-
     this.state.board.loopThroughCells(cell => {
       if (!cell.isMine && !cell.isShown) safeCells.push(cell);
     });
     if (!safeCells.length) return;
-
     const safeCell = safeCells[getRandomInt(0, safeCells.length - 1)];
     safeCell.render({ isSafeClick: true });
-
     setTimeout(() => {
       safeCell.render();
-    }, 2000);
+    }, fadeTime);
   }
 
   handleBtnUndoActionClick() {
@@ -124,14 +127,14 @@ class App {
     });
   }
 
-  handleSetDifficultyBtnClick(event) {
+  handleSetDifficultyBtnClick(event, smileyContainerElement) {
     const { difficultyName } = event.target.dataset;
     this.#onResetGame(difficultyName);
     this.renderer.smileyDefault(smileyContainerElement);
   }
 
-  handleBtnSetMinesManuallyClick() {
-    if (this.state.isMinesSet) return;
+  handleBtnSetMinesManuallyClick(btnSetMinesManually) {
+    if (this.state.isMinesSet || !this.state.isManualMineSetting) return;
     this.renderer.toggleBtnActiveSetMinesManually(btnSetMinesManually);
     this.state.toggleIsManualMineSetting();
   }

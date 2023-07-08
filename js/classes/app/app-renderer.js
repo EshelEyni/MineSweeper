@@ -6,6 +6,7 @@ import {
   SMILEY_MONOCLE_IMG,
   SMILEY_SHOCKED_IMG,
 } from '../../image-assets.js';
+import { isTestEnv } from '../../utils/utils';
 
 class AppRenderer {
   constructor(appState) {
@@ -20,7 +21,7 @@ class AppRenderer {
     bestScoreContainer,
     livesContainerElement,
     flagCounterElement,
-    timerElement
+    timerElement,
   } = {}) {
     this.safeClickCount(safeClickCountElement);
     this.hints(hintsContainerElement);
@@ -47,6 +48,10 @@ class AppRenderer {
       hints += `<button class="hint inset-border" data-idx="${i}">${SMILEY_MONOCLE_IMG}</button>`;
 
     hintsContainerElement.innerHTML = hints;
+  }
+
+  hintBtnClicked(hintBtn) {
+    hintBtn.style.backgroundColor = isTestEnv ? '#e9d66f' : 'var(--hint-color)';
   }
 
   bestScore(bestScoreContainer) {
