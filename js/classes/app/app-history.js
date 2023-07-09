@@ -14,7 +14,7 @@ class AppHistory {
 
   #setCopyOfState(state) {
     return {
-      lives: state.lives,
+      livesCount: state.livesCount,
       minesCount: state.minesCount,
       flagCount: state.flagCount,
       safeClickCount: state.safeClickCount,

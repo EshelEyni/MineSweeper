@@ -4,7 +4,7 @@ import AppStorage from './app-storage';
 export const gameConfig = {
   easy: {
     difficultyName: 'easy',
-    lives: 1,
+    livesCount: 1,
     minesCount: 12,
     flagCount: 12,
     boardSqrt: 8,
@@ -13,7 +13,7 @@ export const gameConfig = {
   },
   medium: {
     difficultyName: 'medium',
-    lives: 3,
+    livesCount: 3,
     minesCount: 30,
     flagCount: 30,
     boardSqrt: 12,
@@ -22,7 +22,7 @@ export const gameConfig = {
   },
   hard: {
     difficultyName: 'hard',
-    lives: 5,
+    livesCount: 5,
     minesCount: 64,
     flagCount: 64,
     boardSqrt: 16,
@@ -65,8 +65,8 @@ class AppState {
     this.hintsCount--;
   }
 
-  decrementLives() {
-    this.lives--;
+  decrementlivesCount() {
+    this.livesCount--;
   }
 
   decrementMinesCount() {

@@ -145,7 +145,7 @@ describe('Cell', () => {
       expect(cell).toEqual(prevState);
     });
 
-    it('should set isMine to true and surroundingMinesCount to 0 if isManualMineSetting is true', () => {
+    it('should set isMine to true, surroundingMinesCount to 0 and change the background color to --mine-color if isManualMineSetting is true', () => {
       cell.onCellClick({ isManualMineSetting: true });
       expect(cell.isMine).toBe(true);
       expect(cell.surroundingMinesCount).toBe(0);
@@ -282,6 +282,30 @@ describe('Cell', () => {
         cell.render({ isSafeClick: true });
         const { backgroundColor } = cellElement.style;
         const expectedColor = document.documentElement.style.getPropertyValue('--safe-click-color');
+        expect(backgroundColor).toEqual(expectedColor);
+      });
+
+      it('should render correctly when isSafeClick is false', () => {
+        cell.setState({ isShown: false, isFlagged: false });
+        cell.render({ isSafeClick: false });
+        const { backgroundColor } = cellElement.style;
+        const expectedColor = '';
+        expect(backgroundColor).toEqual(expectedColor);
+      });
+
+      it('should render correctly when isManualMine is true', () => {
+        cell.setState({ isShown: false, isFlagged: false });
+        cell.render({ isManualMine: true });
+        const { backgroundColor } = cellElement.style;
+        const expectedColor = document.documentElement.style.getPropertyValue('--mine-color');
+        expect(backgroundColor).toEqual(expectedColor);
+      });
+
+      it('should render correctly when isManualMine is false', () => {
+        cell.setState({ isShown: false, isFlagged: false });
+        cell.render({ isManualMine: false });
+        const { backgroundColor } = cellElement.style;
+        const expectedColor = '';
         expect(backgroundColor).toEqual(expectedColor);
       });
     });

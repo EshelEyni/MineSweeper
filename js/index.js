@@ -27,26 +27,30 @@ const app = new App({
   timerElement,
 });
 
-smileyContainerElement.addEventListener('mousedown', app.renderer.smileyShocked);
-smileyContainerElement.addEventListener('mouseup', app.renderer.smileyDefault);
-smileyContainerElement.addEventListener('click', app.handleSmileyClick.bind(app));
-boardTable.addEventListener('click', () =>
-  app.handleBoardClick(
+smileyContainerElement.addEventListener('mousedown', () =>
+  app.renderer.smileyShocked(smileyContainerElement)
+);
+smileyContainerElement.addEventListener('mouseup', () =>
+  app.renderer.smileyDefault(smileyContainerElement)
+);
+smileyContainerElement.addEventListener('click', () =>
+  app.handleSmileyClick({
     safeClickCountElement,
     hintsContainerElement,
     boardTable,
     bestScoreContainer,
     livesContainerElement,
     flagCounterElement,
-    timerElement
-  )
+    timerElement,
+  })
 );
+boardTable.addEventListener('click', app.handleBoardClick.bind(app));
 boardTable.addEventListener('contextmenu', app.handleBoardContainerRightClick.bind(app));
 hintsContainerElement.addEventListener('click', app.handleHintContainerClick.bind(app));
 btnClickSafe.addEventListener('click', () => app.handleBtnSafeClick(safeClickCountElement));
 btnUndoAction.addEventListener('click', app.handleBtnUndoActionClick.bind(app));
-btnDifficultyContainer.addEventListener('click', () =>
-  app.handleSetDifficultyBtnClick({
+btnDifficultyContainer.addEventListener('click', event =>
+  app.handleSetDifficultyBtnClick(event, {
     smileyContainerElement,
     safeClickCountElement,
     hintsContainerElement,
@@ -60,7 +64,17 @@ btnDifficultyContainer.addEventListener('click', () =>
 btnSetMinesManually.addEventListener('click', () =>
   app.handleBtnSetMinesManuallyClick(btnSetMinesManually)
 );
-btnSetSevenBoom.addEventListener('click', app.handleBtnSetSevenBoomClick.bind(app));
+btnSetSevenBoom.addEventListener('click', () =>
+  app.handleBtnSetSevenBoomClick({
+    safeClickCountElement,
+    hintsContainerElement,
+    boardTable,
+    bestScoreContainer,
+    livesContainerElement,
+    flagCounterElement,
+    timerElement,
+  })
+);
 
 addEventListener('keydown', e => {
   if (e.key === 'e' && e.altKey && e.ctrlKey)

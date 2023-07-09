@@ -45,6 +45,7 @@ class Cell {
     if (this.isFlagged) return;
     if (isManualMineSetting) {
       this.setState({ isMine: true, surroundingMinesCount: 0 });
+      this.render({ isManualMine: true });
       return;
     }
     this.setState({ isShown: true });
@@ -68,10 +69,10 @@ class Cell {
     return newCell;
   }
 
-  render({ isSafeClick = false } = {}) {
+  render({ isSafeClick = false, isManualMine = false } = {}) {
     const cellElement = this.#getCellElement();
     if (this.isShown) this.#renderShownCell(cellElement);
-    else this.#renderHiddenCell(cellElement, isSafeClick);
+    else this.#renderHiddenCell(cellElement, { isSafeClick, isManualMine });
   }
 
   renderCheat() {
@@ -99,11 +100,13 @@ class Cell {
     cellElement.classList.add('showned');
   }
 
-  #renderHiddenCell(cellElement, isSafeClick) {
+  #renderHiddenCell(cellElement, { isSafeClick = false, isManualMine = false }) {
     const classListSet = new Set(cellElement.classList);
     if (classListSet.has('showned')) cellElement.classList.remove('showned');
     if (isSafeClick)
       cellElement.style.backgroundColor = isTestEnv ? '#3894c5' : 'var(--safe-click-color)';
+    else if (isManualMine)
+      cellElement.style.backgroundColor = isTestEnv ? '#d40505cc' : 'var(--mine-color)';
     else cellElement.style.backgroundColor = '';
     cellElement.innerHTML = this.isFlagged ? FLAG_IMG : '';
   }

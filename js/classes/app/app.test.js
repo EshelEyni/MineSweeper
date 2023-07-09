@@ -244,7 +244,7 @@ describe('App', () => {
       });
 
       it('should exit handleBoardClick without triggering methods if state.live are falsey', () => {
-        app.state.lives = 0;
+        app.state.livesCount = 0;
         app.handleBoardClick(event);
         const methodsToCheckForEarlyReturn = setMethodsToCheckForEarlyReturn(app);
         expectMethodsNotToBeCalled(methodsToCheckForEarlyReturn);
@@ -281,13 +281,14 @@ describe('App', () => {
           app.history.addState,
           app.state.board.board[rowIdx][columnIdx].onCellClick,
         ];
-
+        
         const methodsNotCalledWhenMinesCountPositive = [
           app.state.toggleIsManualMineSetting,
           app.state.toggleIsMinesSet,
           app.renderer.toggleBtnActiveSetMinesManually,
+          app.state.board.loopThroughCells
         ];
-
+        
         const methodsNeverCalled = [
           app.state.toggleIsClickHint,
           app.state.decrementLives,
@@ -397,9 +398,9 @@ describe('App', () => {
       });
 
       it('should trigger methods in onGameLoss if the clickedCell is a mine and lives is 0', () => {
-        app.state.lives = 1;
+        app.state.livesCount = 1;
         app.state.board.board[rowIdx][columnIdx].isMine = true;
-        app.state.decrementLives = vi.fn(() => app.state.lives--);
+        app.state.decrementLives = vi.fn(() => app.state.livesCount--);
         const methodToBeCalled = [
           app.state.decrementLives,
           app.renderer.lives,
@@ -465,7 +466,7 @@ describe('App', () => {
       });
 
       it('should exit handleBoardClick without triggering methods if state.live are falsey', () => {
-        app.state.lives = 0;
+        app.state.livesCount = 0;
         app.handleBoardClick(event);
         const methodsToCheckForEarlyReturn = setMethodsToCheckForEarlyReturn(app);
         expectMethodsNotToBeCalled(methodsToCheckForEarlyReturn);

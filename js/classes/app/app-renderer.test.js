@@ -22,7 +22,7 @@ describe('AppRenderer', () => {
     it('should set the correct appState when constructed', () => {
       const mockAppState = {
         board: [],
-        lives: 3,
+        livesCount: 3,
         flagCount: 0,
         safeClickCount: 0,
         hintsCount: 0,
@@ -187,7 +187,7 @@ describe('AppRenderer', () => {
 
     it('should render default lives when lives is 0', () => {
       const livesContainerElement = document.querySelector('.lives-container');
-      mockAppState = { lives: 0 };
+      mockAppState = { livesCount: 0 };
       appRenderer = new AppRenderer(mockAppState);
       const expectedInnerHTML = '';
       appRenderer.lives(livesContainerElement);
@@ -196,17 +196,17 @@ describe('AppRenderer', () => {
 
     it('should render lives when lives is greater than 0', () => {
       const livesContainerElement = document.querySelector('.lives-container');
-      mockAppState = { lives: 3 };
+      mockAppState = { livesCount: 3 };
       appRenderer = new AppRenderer(mockAppState);
       const div = document.createElement('div');
-      div.innerHTML = HEART_IMG.repeat(mockAppState.lives);
+      div.innerHTML = HEART_IMG.repeat(mockAppState.livesCount);
       const expectedInnerHTML = div.innerHTML;
       appRenderer.lives(livesContainerElement);
       expect(livesContainerElement.innerHTML).toEqual(expectedInnerHTML);
 
-      mockAppState = { lives: 2 };
+      mockAppState = { livesCount: 2 };
       appRenderer = new AppRenderer(mockAppState);
-      div.innerHTML = HEART_IMG.repeat(mockAppState.lives);
+      div.innerHTML = HEART_IMG.repeat(mockAppState.livesCount);
       const expectedInnerHTML_2 = div.innerHTML;
       appRenderer.lives(livesContainerElement);
       expect(livesContainerElement.innerHTML).toEqual(expectedInnerHTML_2);

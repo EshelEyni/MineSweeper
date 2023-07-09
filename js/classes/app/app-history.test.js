@@ -27,7 +27,7 @@ describe('AppHistory', () => {
 
     it('should add a previous state to the history and set the current state', () => {
       const state = {
-        lives: 3,
+        livesCount: 3,
         minesCount: 5,
         flagCount: 2,
         safeClickCount: 2,
@@ -42,7 +42,7 @@ describe('AppHistory', () => {
 
     it('should add multiple states to the history and always set the current state as the previous state', () => {
       const state1 = {
-        lives: 3,
+        livesCount: 3,
         minesCount: 5,
         flagCount: 2,
         safeClickCount: 2,
@@ -50,7 +50,7 @@ describe('AppHistory', () => {
         board,
       };
       const state2 = {
-        lives: 2,
+        livesCount: 2,
         minesCount: 4,
         flagCount: 3,
         safeClickCount: 1,
@@ -66,10 +66,10 @@ describe('AppHistory', () => {
     });
 
     it('should not affect the history when the original state object is mutated after adding', () => {
-      const originalLives = 3;
-      const newLives = 2;
+      const originallivesCount = 3;
+      const newlivesCount = 2;
       const originalState = {
-        lives: originalLives,
+        livesCount: originallivesCount,
         minesCount: 5,
         flagCount: 2,
         safeClickCount: 2,
@@ -78,8 +78,8 @@ describe('AppHistory', () => {
       };
 
       appHistory.addState(originalState);
-      originalState.lives = newLives;
-      expect(appHistory.prevState.lives).toBe(originalLives);
+      originalState.livesCount = newlivesCount;
+      expect(appHistory.prevState.livesCount).toBe(originallivesCount);
     });
   });
 
@@ -91,7 +91,7 @@ describe('AppHistory', () => {
       board = new Board(8);
 
       state_1 = {
-        lives: 3,
+        livesCount: 3,
         minesCount: 5,
         flagCount: 2,
         safeClickCount: 2,
@@ -99,7 +99,7 @@ describe('AppHistory', () => {
         board,
       };
       state_2 = {
-        lives: 2,
+        livesCount: 2,
         minesCount: 4,
         flagCount: 1,
         safeClickCount: 1,
@@ -107,7 +107,7 @@ describe('AppHistory', () => {
         board,
       };
       state_3 = {
-        lives: 1,
+        livesCount: 1,
         minesCount: 3,
         flagCount: 0,
         safeClickCount: 0,
@@ -115,7 +115,7 @@ describe('AppHistory', () => {
         board,
       };
       state_4 = {
-        lives: 1,
+        livesCount: 1,
         minesCount: 2,
         flagCount: 0,
         safeClickCount: 0,

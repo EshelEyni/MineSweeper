@@ -70,14 +70,14 @@ class AppRenderer {
   lives(livesContainerElement) {
     if (!this.isTimerRunning) {
       let lives = '';
-      for (let i = 0; i < this.appState.lives; i++) lives += `${HEART_IMG}`;
+      for (let i = 0; i < this.appState.livesCount; i++) lives += `${HEART_IMG}`;
       livesContainerElement.innerHTML = lives;
       return;
     }
 
     const children = livesContainerElement.children;
     [...children].reverse().forEach((child, idx) => {
-      if (idx >= this.appState.lives) child.style.opacity = '0';
+      if (idx >= this.appState.livesCount) child.style.opacity = '0';
     });
   }
 

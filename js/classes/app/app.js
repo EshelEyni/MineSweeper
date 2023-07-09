@@ -57,7 +57,7 @@ class App {
 
   handleBoardClick(event) {
     const { target } = event;
-    if (!target.classList.contains('cell') || !this.state.lives) return;
+    if (!target.classList.contains('cell') || !this.state.livesCount) return;
     const { dataset } = target;
     if (!dataset.rowIdx || !dataset.columnIdx) return;
     const rowIdx = Number(dataset.rowIdx);
@@ -89,7 +89,7 @@ class App {
   handleBoardContainerRightClick(event) {
     event.preventDefault();
     const { target } = event;
-    if (!target.classList.contains('cell') || !this.state.lives) return;
+    if (!target.classList.contains('cell') || !this.state.livesCount) return;
     const { dataset } = target;
     if (!dataset.rowIdx || !dataset.columnIdx) return;
     const rowIdx = Number(dataset.rowIdx);
@@ -110,7 +110,7 @@ class App {
     }
   }
 
-  handleBtnSafeClick(safeClickCountElement, fadeTime = 2000) {
+  handleBtnSafeClick(safeClickCountElement, fadeTime = 2500) {
     if (!this.state.safeClickCount) return;
     if (!this.state.isMinesSet) this.state.board.setRandomMines(this.state.minesCount);
     this.state.decrementSafeClickCount();
@@ -123,7 +123,7 @@ class App {
     const safeCell = safeCells[getRandomInt(0, safeCells.length - 1)];
     safeCell.render({ isSafeClick: true });
     setTimeout(() => {
-      safeCell.render();
+      safeCell.render({ isSafeClick: false });
     }, fadeTime);
   }
 
@@ -244,6 +244,9 @@ class App {
       this.state.toggleIsManualMineSetting();
       this.state.toggleIsMinesSet();
       this.renderer.toggleBtnActiveSetMinesManually(btnSetMinesManually);
+      this.state.board.loopThroughCells(cell => {
+        cell.render({ isManualMine: false });
+      });
     }
     const { rowIdx, columnIdx } = clickedCell.coords;
     this.state.board.setSurroundingMineCount(rowIdx, columnIdx);
@@ -269,7 +272,7 @@ class App {
   #onMineClick() {
     this.state.decrementLives();
     this.renderer.lives(livesContainerElement);
-    if (!this.state.lives) {
+    if (!this.state.livesCount) {
       this.state.onGameLoss();
       this.renderer.smileyLoss(smileyContainerElement);
     }

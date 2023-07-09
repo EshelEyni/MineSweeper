@@ -65,7 +65,7 @@
   vertical-align: middle;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
-  transition: border 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 @media screen and (max-width: 400px) {

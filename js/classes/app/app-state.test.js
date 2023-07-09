@@ -90,9 +90,9 @@ describe('AppState', () => {
 
   describe('decrementLives', () => {
     it('should decrement lives by 1', () => {
-      const livesCount = gameConfig.hard.lives;
-      appState.decrementLives();
-      expect(appState.lives).toBe(livesCount - 1);
+      const {livesCount} = gameConfig.hard;
+      appState.decrementlivesCount();
+      expect(appState.livesCount).toBe(livesCount - 1);
     });
   });
 
@@ -182,7 +182,7 @@ describe('AppState', () => {
   describe('setPrevState', () => {
     it('should correctly update the current state with the values of the provided previous state', () => {
       const prevState = {
-        lives: 12,
+        livesCount: 12,
         minesCount: 12,
         flagCount: 12,
         safeClickCount: 12,
