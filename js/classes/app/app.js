@@ -88,8 +88,9 @@ class App {
 
   handleBoardContainerRightClick(event) {
     event.preventDefault();
+    if (!this.state.livesCount || this.state.isManualMineSetting) return;
     const { target } = event;
-    if (!target.classList.contains('cell') || !this.state.livesCount) return;
+    if (!target.classList.contains('cell')) return;
     const { dataset } = target;
     if (!dataset.rowIdx || !dataset.columnIdx) return;
     const rowIdx = Number(dataset.rowIdx);

@@ -458,24 +458,31 @@ describe('App', () => {
         clearInterval(app.state.intervalTimerId);
       });
 
-      it('should exit handleBoardClick without triggering methods if target lacks cell class', () => {
+      it('should exit handleBoardContainerRightClick without triggering methods if target lacks cell class', () => {
         cellElement.classList.remove('cell');
-        app.handleBoardClick(event);
+        app.handleBoardContainerRightClick(event);
         const methodsToCheckForEarlyReturn = setMethodsToCheckForEarlyReturn(app);
         expectMethodsNotToBeCalled(methodsToCheckForEarlyReturn);
       });
 
-      it('should exit handleBoardClick without triggering methods if state.live are falsey', () => {
+      it('should exit handleBoardContainerRightClick without triggering methods if state.live are falsey', () => {
         app.state.livesCount = 0;
-        app.handleBoardClick(event);
+        app.handleBoardContainerRightClick(event);
         const methodsToCheckForEarlyReturn = setMethodsToCheckForEarlyReturn(app);
         expectMethodsNotToBeCalled(methodsToCheckForEarlyReturn);
       });
 
-      it('should exit handleBoardClick without triggering methods if target lacks rowIdx and columnIdx data attributes', () => {
+      it('should exit handleBoardContainerRightClick without triggering methods if isManualMineSetting is true', () => {
+        app.state.isManualMineSetting = true;
+        app.handleBoardContainerRightClick(event);
+        const methodsToCheckForEarlyReturn = setMethodsToCheckForEarlyReturn(app);
+        expectMethodsNotToBeCalled(methodsToCheckForEarlyReturn);
+      });
+
+      it('should exit handleBoardContainerRightClick without triggering methods if target lacks rowIdx and columnIdx data attributes', () => {
         cellElement.removeAttribute('data-row-idx');
         cellElement.removeAttribute('data-column-idx');
-        app.handleBoardClick(event);
+        app.handleBoardContainerRightClick(event);
         const methodsToCheckForEarlyReturn = setMethodsToCheckForEarlyReturn(app);
         expectMethodsNotToBeCalled(methodsToCheckForEarlyReturn);
       });
