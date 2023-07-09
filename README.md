@@ -1,7 +1,6 @@
-
 # Minesweeper
 
-A classic Minesweeper game built using vanilla JavaScript and CSS, following the Object-Oriented Programming (OOP) paradigm. The application is bundled using Parcel.
+A classic Minesweeper game built using vanilla JavaScript and CSS, following the Object-Oriented Programming (OOP) paradigm. The application is bundled using Parcel and tested with Vitest to ensure quality and functionality.
 
 [Check it out!](https://mine-sweeper-esheleyni.netlify.app/)
 
@@ -44,6 +43,12 @@ And build the application for production with:
 
 ```bash
 npm run build
+```
+
+You can run your test suite using:
+
+```bash
+npm run test
 ```
 
 The application should be running at `http://localhost:1234` if you're running the development server.
